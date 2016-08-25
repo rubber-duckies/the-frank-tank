@@ -12,6 +12,21 @@
 - [ ] Map database structure
 
 ----
+# Git Flow
+
+1. When working on new local machine(if machine already set-up, skip to step 2)
+  * git remote add upstream <<url of organization's repo>>
+  * git remote -v
+
+2.
+  * git pull upstream master
+  * git rebase
+
+2. When done working for the day
+  * git push origin master   // to push to your own github
+  * // if you are ready to push to organizations's repo, create pull request on your own github to the organization's repo
+
+----
 # Development Map
 
 1. Stage 1:
