@@ -1,9 +1,9 @@
 import React from 'react';
 
-class NavBar extends React {
+export default class NavBar extends React {
   render() {
     return (
-      <NavBar />
+      <p>This is the NavBar</p>
     );
   }
 }

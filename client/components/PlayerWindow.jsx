@@ -1,9 +1,9 @@
 import React from 'react';
 
-class PlayerWindow extends React {
+export default class PlayerWindow extends React {
   render() {
     return (
-      <PlayerWindow />
+      <p>This is the PlayerWindow</p>
     );
   }
 }
