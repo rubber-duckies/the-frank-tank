@@ -10,8 +10,6 @@ const controls = document.getElementById('playerControls');
 const firstScriptTag = document.getElementsByTagName('script')[0];
 const tag = document.createElement('script');
 
-$(document).foundation();
-
 tag.src = 'https://www.youtube.com/iframe_api';
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -28,9 +26,8 @@ function onPlayerReady(event) {
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.PLAYING) {
     window.setInterval(() => {
-      const percent = (event.target.getCurrentTime()/totalTime)*100;
+      const percent = (event.target.getCurrentTime() / totalTime) * 100;
 
-      //var marker = document.getElementById('marker');
       if (!seek) {
         playHead.style.left = `${percent}%`;
       }
@@ -55,7 +52,7 @@ function onYouTubeIframeAPIReady() {
     },
     events: {
       onReady: onPlayerReady,
-      onStateChange: onPlayerStateChange
+      onStateChange: onPlayerStateChange,
     }
   });
 }
@@ -86,4 +83,20 @@ controls.addEventListener('mousemove', (e) => {
     const offsetString = `${(offset * 100)}%`;
     playHead.style.left = offsetString;
   }
+});
+
+
+
+$.ajax({
+  url: '/channel',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  data: JSON.stringify({
+    channel_id: 1,
+    user_id: 1,
+  }),
+}).done(function(data) {
+  console.log(data);
 });
