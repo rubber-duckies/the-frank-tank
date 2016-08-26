@@ -1,7 +1,7 @@
 import React from 'react';
 // import ReactDOM from 'react-dom';
 import PlayerWindow from './PlayerWindow.jsx';
-import NavBar from './NavBar';
+import NavBar from './NavBar.jsx';
 
 export default class App extends React {
   render() {
