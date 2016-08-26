@@ -144,22 +144,22 @@ app.get('/', (req, res) => {
 
   GET:
     Response object: array of all current users:
-    {
-      id: user id,
-      name: user name
-    }
+      {
+        id: user id,
+        name: user name
+      }
 
   POST:
     Request object (from client):
-    {
-      name: name of user to add
-    }
+      {
+        name: name of user to add
+      }
 
     Response object:
-    {
-      id: new user's id,
-      name: new user's name
-    }
+      {
+        id: new user's id,
+        name: new user's name
+      }
   **********************************************
 */
 
@@ -191,30 +191,31 @@ app.post('/users', (req, res) => {
   Videos are searched for by the following keywords, prepended with "extreme":
   - sorted by # of views, maybe randomized?
 
-  Request object (from client):
-  {
-    channel_id: requested channel id,
-    user_id: current user id
-  }
-
-  Response object:
-  {
-    id: current channel id,
-    channel_name: current channel name,
-    background: background image url or asset,
-    videos: array of video objects:
-    {
-      url: youtube url id,
-      time_based_likes: array of time-based like objects:
+  POST:
+    Request object (from client):
       {
-        id: current time-based like id,
-        start: like start time (in seconds from beginning of video),
-        stop: like stop time (in seconds from beginning of video),
-        video_id: current video id,
-        users: array of user ids that have like this video
+        channel_id: requested channel id,
+        user_id: current user id
       }
-    }
-  }
+
+    Response object:
+      {
+        id: current channel id,
+        channel_name: current channel name,
+        background: background image url or asset,
+        videos: array of video objects:
+          {
+            url: youtube url id,
+            time_based_likes: array of time-based like objects:
+              {
+                id: current time-based like id,
+                start: like start time (in seconds from beginning of video),
+                stop: like stop time (in seconds from beginning of video),
+                video_id: current video id,
+                users: array of user ids that have like this video
+              }
+          }
+      }
   ******************************************************************
 */
 
@@ -236,37 +237,71 @@ app.post('/channel', (req, res) => {
 });
 
 /*
+  *********************************************
+  Responds to requests for user information
+
+  GET:
+    Response object: array of all time-based likes:
+      {
+        id: current time-based like id,
+        start: like start time (in seconds from beginning of video),
+        stop: like stop time (in seconds from beginning of video),
+        video_id: current video id,
+        likes: array of user ids that have like this video
+      }
+  **********************************************
+*/
+
+app.get('/likes', (req, res) => {
+  const likesResObj = likes.map(e => e);
+  res.send(likesResObj);
+});
+
+/*
   **************************************************************
   Responds to requests to create time-based likes on user click.
 
   POST:
     Request object (from client):
-    {
-      start: like start time (in seconds from beginning of video),
-      stop: like stop time (in seconds from beginning of video),
-      user_id: current user id
-      video_id: current video id
-    }
+      {
+        start: like start time (in seconds from beginning of video),
+        stop: like stop time (in seconds from beginning of video),
+        user_id: current user id
+        video_id: current video id
+      }
 
     Response object:
-    {
-      id: current time-based like id,
-      start: like start time (in seconds from beginning of video),
-      stop: like stop time (in seconds from beginning of video),
-      video_id: current video id,
-      likes: array of user ids that have like this video
-    }
+      {
+        id: current time-based like id,
+        start: like start time (in seconds from beginning of video),
+        stop: like stop time (in seconds from beginning of video),
+        video_id: current video id,
+        likes: array of user ids that have like this video
+      }
   **************************************************************
 */
 
 app.post('/likes/create', (req, res) => {
   const newLike = req.body;
 
-  // set id to next available
-  newLike.id = likes.length + 1;
+  newLike.users = [newLike.user_id];
+  delete newLike.user_id;
 
-  // push new like to Likes object
-  likes.push(newLike);
+  // Check to see if this like already exists
+  const checkLike = likes.filter(like =>
+    like.start === newLike.start &&
+    like.stop === newLike.stop &&
+    like.video_id === newLike.video_id)[0];
+
+  // Validation: create new like if it doesn't already exist
+  if (!checkLike) {
+    newLike.id = likes.length + 1;
+    // push new like to database
+    likes.push(newLike);
+  } else {
+    // if like already exists, set return object's id to match
+    newLike.id = checkLike.id;
+  }
 
   res.send(newLike);
 });
@@ -275,17 +310,18 @@ app.post('/likes/create', (req, res) => {
   *********************************************************************
   Responds to requests to update time-based likes on user click
 
-  Request object (from client):
-    {
-      user_id: current user id,
-      like_id: current time-based like id
-    }
+  POST:
+    Request object (from client):
+      {
+        user_id: current user id,
+        like_id: current time-based like id
+      }
 
-  Response object:
-    {
-      id: current time-based like id,
-      users: array containing all user ids that have liked (no repeats)
-    }
+    Response object:
+      {
+        id: current time-based like id,
+        users: array containing all user ids that have liked (no repeats)
+      }
   *********************************************************************
 */
 
