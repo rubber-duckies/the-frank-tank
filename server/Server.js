@@ -137,11 +137,17 @@ app.post('/likes/create', (req, res) => {
 });
 
 app.post('/likes/update', (req, res) => {
-  const userId = req.body.user_id;
-  const videoId = req.body.video_id;
-  const currentLikeObj = likesObj[videoId];
-  currentLikeObj.likes.push(userId);
-  res.send(currentLikeObj.likes.length);
+  const userId = +req.body.user_id;
+  const likeId = +req.body.like_id;
+
+  const currentLikeObj = likesObj.filter(element => element.id === likeId)[0];
+
+  currentLikeObj.users.push(userId);
+  currentLikeObj.users = currentLikeObj.users
+    .filter((element, index, array) => array.indexOf(element) === index)
+    .sort((a, b) => (a - b));
+
+  res.send(JSON.stringify({ id: currentLikeObj.id, users: currentLikeObj.users }));
 });
 
 app.listen(serverUrl);
