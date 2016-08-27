@@ -1,9 +1,8 @@
 import React from 'react';
-// import ReactDOM from 'react-dom';
 import PlayerWindow from './PlayerWindow.jsx';
 import NavBar from './NavBar.jsx';
 
-export default class App extends React {
+export default class App extends React.Component {
   render() {
     return (
       <div>
@@ -13,8 +12,3 @@ export default class App extends React {
     );
   }
 }
-
-// ReactDOM.render(
-//   <App />,
-//   document.getElementById('example')
-// );
