@@ -18,10 +18,10 @@ Todo: Get shit done
 */
 
 const express = require('express');
-
 const path = require('path');
-
 const bodyParser = require('body-parser');
+const babelify = require('babelify');
+const browserify = require('browserify-middleware');
 
 const app = express();
 
@@ -62,10 +62,10 @@ const likes = [
   { id: 4, start: 70, stop: 90, video_id: 3, users: [2, 5] },
 ];
 
-/*
-  *********************************************************
-  Completed channel object should look something like this:
-  *********************************************************
+
+  // *********************************************************
+  // Completed channel object should look something like this:
+  // *********************************************************
 
 
 const dummyObj = {
@@ -108,8 +108,6 @@ const dummyObj = {
   }],
 };
 
-*/
-
 /*
   ****************
   Middleware calls
@@ -125,8 +123,21 @@ app.use(express.static(path.join(__dirname, '../assets')));
   *******************
   ROUTING STARTS HERE
   *******************
+*/
 
+/*
+  *******************************************
+  Browserify and Babelify all files for React
+  *******************************************
+ */
 
+app.get('/app-bundle.js',
+  browserify('../client/main.js', {
+    transform: [[babelify, { presets: ['es2015', 'react'] }]],
+  })
+);
+
+/*
   *********************************
   Initializes interface.
 
@@ -225,6 +236,7 @@ app.post('/channel', (req, res) => {
 
   // Build channel object for response
   const channelResObj = channels.filter(channel => channel.id === channelId)[0];
+
   const videosResObj = videos.filter(video => video.channel_id === channelId);
 
   videosResObj.forEach(video => {
