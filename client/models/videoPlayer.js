@@ -85,8 +85,6 @@ controls.addEventListener('mousemove', (e) => {
   }
 });
 
-
-
 $.ajax({
   url: '/channel',
   method: 'POST',
@@ -97,6 +95,6 @@ $.ajax({
     channel_id: 1,
     user_id: 1,
   }),
-}).done(function(data) {
+}).then(function(data) {
   console.log(data);
 });
