@@ -85,7 +85,7 @@ const dummyObj = {
       id: 2,
       start: 74,
       stop: 82,
-      video_id: 2,
+      video_id: 1,
       users: [2, 3, 4],
     }],
   }, {
@@ -175,26 +175,12 @@ app.get('/', (req, res) => {
   **********************************************
 */
 
-app.get('/users', (req, res) => {
-  const usersResObj = users.map(e => e);
-  res.send(usersResObj);
-});
-
-app.post('/users', (req, res) => {
-  const userName = req.body.name;
-
-  // Grab user object from database, if it exists
-  let userResObj = users.filter((element) => element.name === userName)[0];
-
-  // Validate user object
-  if (!userResObj) {
-    // Create user object and push to database if it doesn't already exist
-    userResObj = { id: users.length + 1, name: userName };
-    users.push(userResObj);
-  }
-
-  res.send(userResObj);
-});
+// app.get('/users', (req, res) => {
+//   db.getAllUsers()
+//   .then(usersResObj => {
+//     res.send(usersResObj);
+//   });
+// });
 
 /*
   ******************************************************************
@@ -203,13 +189,7 @@ app.post('/users', (req, res) => {
   Videos are searched for by the following keywords, prepended with "extreme":
   - sorted by # of views, maybe randomized?
 
-  POST:
-    Request object (from client):
-      {
-        channel_id: requested channel id,
-        user_id: current user id
-      }
-
+  GET:
     Response object:
       {
         id: current channel id,
@@ -231,39 +211,26 @@ app.post('/users', (req, res) => {
   ******************************************************************
 */
 
-app.post('/channel', (req, res) => {
-  let channelResObj = {};
-  let arrayOfLikes = [];
-  const channelId = req.body.channel_id;
+app.get('/channel/:id', (req, res) => {
   // const userId = req.body.user_id; <-- leaving in for Authentication (later)
 
   // Build channel object for response
-  db.getChannelById(channelId).then(channel => {
-    channelResObj = channel[0];
-    return db.getVideosByChannel(channelId);
-  })
-  .then(videosArray => {
-    channelResObj.videos = videosArray;
-    return Promise.all(videosArray.map(video => db.getLikesByVideo(video.id)));
-  })
-  .then(likesArray => {
-    arrayOfLikes = likesArray;
-    console.log('likesArray: ', likesArray, 'like[1]: ', likesArray[1]);
-    channelResObj.videos.forEach((video, index) => {
-      channelResObj.videos[index].time_based_likes = likesArray[index];
-    });
-    likesArray = [].concat.apply(this, likesArray).slice(1);
-    console.log('channelResObj: ', channelResObj.videos[1].time_based_likes);
+  db.getChannelById(req.params.id)
+  .then(channelResObj => {
     res.send(channelResObj);
   });
-  //   return Promise.all(likesArray.map(like => db.getUserLikesArray(like.id)));
-  // })
-  // .then(userLikes => {
-  //   console.log('userLikes: ', userLikes);
-  //   userLikes = userLikes.map(ids => Object.keys(ids));
-  //   console.log("just id's: ", userLikes);
-  // });
 });
+
+// Old, and stinky:
+// app.post('/channel', (req, res) => {
+//   // const userId = req.body.user_id; <-- leaving in for Authentication (later)
+
+//   // Build channel object for response
+//   db.getChannelById(req.body.channel_id)
+//   .then(channelResObj => {
+//     res.send(channelResObj);
+//   });
+// });
 
 /*
   *********************************************
