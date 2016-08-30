@@ -18,6 +18,9 @@
 
           HSK HSK HSK
         GIMME THE DATAZ
+
+Using PostgreSQL.  Installation instructions:
+
 */
 
 const config = require('../knexfile');
@@ -27,14 +30,20 @@ const knex = require('knex')(config[env]);
 
 knex.migrate.latest([config]);
 
-knex.getChannelById = (id) => knex('channels').where('id', id);
-
-knex.getVideosByChannel = (channelId) => knex('videos').where('channel_id', channelId);
+knex.getVideosByChannel = (channelId) => knex('videos').where('channel_id', channelId)
+  .then(videosArray => {
+    videosArray.forEach(video => {
+      video.time_based_likes = [];
+    });
+    return videosArray;
+  });
 
 knex.getLikesByVideo = (videoId) => knex('likes').where('video_id', videoId);
 
 knex.getUserLikesArray = (likeId) =>
   knex.select('user_id').from('likes_by_user').where('likes_id', likeId);
+
+knex.getAllUsers = () => knex('users');
 
 knex.getAllLikes = () => {
   let arrayOfLikes = [];
@@ -52,6 +61,35 @@ knex.getAllLikes = () => {
   });
 };
 
+knex.getChannelById = (channelId) => {
+  let channelResObj = {};
+  let arrayOfLikes = [];
+  let arrayOfVideos = [];
+
+  // Build channel object by channel id
+  return knex.getAllLikes()
+  .then(likesArray => {
+    arrayOfLikes = likesArray;
+    return knex.getVideosByChannel(channelId);
+  })
+  .then(videosArray => {
+    videosArray.forEach(video => {
+      video.time_based_likes = video.time_based_likes
+      .concat(arrayOfLikes.filter(e => e.video_id === video.id));
+    });
+    return videosArray;
+  })
+  .then(videosArray => {
+    arrayOfVideos = videosArray;
+    return knex('channels').where('id', channelId);
+  })
+  .then(channel => {
+    channelResObj = channel[0];
+    channelResObj.videos = arrayOfVideos;
+    return channelResObj;
+  });
+};
+
 knex.createLike = (like) => {
   const likeObj = {
     start_time: like.start,
@@ -66,6 +104,10 @@ knex.createLike = (like) => {
     return id[0];
   });
 };
+
+// knex.init = () => Promise.all([
+//   knex('channels').insert({ id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg' }),
+// ]);
 
 knex.clear = () => Promise.all([
   knex('channels').delete(),
