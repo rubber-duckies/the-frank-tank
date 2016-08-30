@@ -4,6 +4,7 @@
   "description": "makersquare greenfield project",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon server/Server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +28,7 @@
     "express": "^4.14.0",
     "knex": "^0.11.10",
     "path": "^0.12.7",
+    "pg": "^6.1.0",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "request": "^2.74.0"

@@ -22,6 +22,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const babelify = require('babelify');
 const browserify = require('browserify-middleware');
+const db = require('./db');
 
 const app = express();
 
@@ -132,7 +133,7 @@ app.use(express.static(path.join(__dirname, '../assets')));
  */
 
 app.get('/app-bundle.js',
-  browserify('../client/main.js', {
+  browserify(path.join(__dirname, '../client/main.js'), {
     transform: [[babelify, { presets: ['es2015', 'react'] }]],
   })
 );
@@ -231,21 +232,37 @@ app.post('/users', (req, res) => {
 */
 
 app.post('/channel', (req, res) => {
+  let channelResObj = {};
+  let arrayOfLikes = [];
   const channelId = req.body.channel_id;
   // const userId = req.body.user_id; <-- leaving in for Authentication (later)
 
   // Build channel object for response
-  const channelResObj = channels.filter(channel => channel.id === channelId)[0];
-
-  const videosResObj = videos.filter(video => video.channel_id === channelId);
-
-  videosResObj.forEach(video => {
-    video.time_based_likes = likes.filter(like => like.video_id === video.id);
+  db.getChannelById(channelId).then(channel => {
+    channelResObj = channel[0];
+    return db.getVideosByChannel(channelId);
+  })
+  .then(videosArray => {
+    channelResObj.videos = videosArray;
+    return Promise.all(videosArray.map(video => db.getLikesByVideo(video.id)));
+  })
+  .then(likesArray => {
+    arrayOfLikes = likesArray;
+    console.log('likesArray: ', likesArray, 'like[1]: ', likesArray[1]);
+    channelResObj.videos.forEach((video, index) => {
+      channelResObj.videos[index].time_based_likes = likesArray[index];
+    });
+    likesArray = [].concat.apply(this, likesArray).slice(1);
+    console.log('channelResObj: ', channelResObj.videos[1].time_based_likes);
+    res.send(channelResObj);
   });
-
-  channelResObj.videos = videosResObj;
-
-  res.send(channelResObj);
+  //   return Promise.all(likesArray.map(like => db.getUserLikesArray(like.id)));
+  // })
+  // .then(userLikes => {
+  //   console.log('userLikes: ', userLikes);
+  //   userLikes = userLikes.map(ids => Object.keys(ids));
+  //   console.log("just id's: ", userLikes);
+  // });
 });
 
 /*
@@ -265,8 +282,9 @@ app.post('/channel', (req, res) => {
 */
 
 app.get('/likes', (req, res) => {
-  const likesResObj = likes.map(e => e);
-  res.send(likesResObj);
+  db.getAllLikes().then((likesArray) => {
+    res.send(likesArray);
+  });
 });
 
 /*
