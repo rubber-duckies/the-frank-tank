@@ -41,7 +41,8 @@ knex.getVideosByChannel = (channelId) => knex('videos').where('channel_id', chan
 knex.getLikesByVideo = (videoId) => knex('likes').where('video_id', videoId);
 
 knex.getUserLikesArray = (likeId) =>
-  knex.select('user_id').from('likes_by_user').where('likes_id', likeId);
+  knex.select('user_id').from('likes_by_user').where('likes_id', likeId)
+  .then(userLikes => userLikes.map(element => element.user_id));
 
 knex.getAllUsers = () => knex('users');
 
@@ -52,8 +53,7 @@ knex.getAllLikes = () => {
     arrayOfLikes = likesArray;
     return Promise.all(likesArray.map(like => knex.getUserLikesArray(like.id)));
   })
-  .then(userLikes => {
-    const userIds = userLikes.map(user => user.map(element => element.user_id));
+  .then(userIds => {
     arrayOfLikes.forEach((like, index) => {
       like.users = userIds[index];
     });
@@ -77,9 +77,6 @@ knex.getChannelById = (channelId) => {
       video.time_based_likes = video.time_based_likes
       .concat(arrayOfLikes.filter(e => e.video_id === video.id));
     });
-    return videosArray;
-  })
-  .then(videosArray => {
     arrayOfVideos = videosArray;
     return knex('channels').where('id', channelId);
   })
@@ -97,13 +94,20 @@ knex.createLike = (like) => {
     video_id: like.video_id,
   };
   const userId = like.user_id;
+
   return knex('likes').insert(likeObj)
-  .then(id => knex('likes_by_user').insert({ user_id: userId }).where('like_id', id[0]))
+  .then(() => knex.select('id').from('likes').where(likeObj))
   .then(id => {
-    console.log('Like created!', id);
-    return id[0];
-  });
+    likeObj.id = id[0].id;
+    likeObj.users = [userId];
+    return knex('likes_by_user').insert({ user_id: userId, likes_id: id[0].id });
+  })
+  .then(() => likeObj);
 };
+
+knex.updateLike = (obj) => knex('likes_by_user').insert(obj)
+  .then(() => knex.getUserLikesArray(obj.likes_id))
+  .then(usersArray => ({ id: obj.likes_id, users: usersArray }));
 
 // knex.init = () => Promise.all([
 //   knex('channels').insert({ id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg' }),
