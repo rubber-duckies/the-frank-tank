@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Nav from '../models/navigation.js';
 
 export default class NavBar extends React.Component {
   constructor(props) {
@@ -10,16 +11,18 @@ export default class NavBar extends React.Component {
 
   render() {
     return (
-      <div>This is {this.state.user}'s NavBar
-        <div className="navigation">
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/">Channels</a></li>
-            <li><a href="/">Logout</a></li>
-            <li><a href="/channel">Get Channel</a></li>
+      <ul className="dropdown menu" data-dropdown-menu>
+        <li><a href="/">Home</a></li>
+        <li className="is-dropdown-submenu-parent">
+          <a href="/">Channels</a>
+          <ul className="menu">
+            <li><a href="/channel">Sea</a></li>
+            <li><a href="/channel">Air</a></li>
+            <li><a href="/channel">Land</a></li>
           </ul>
-        </div>
-      </div>
+        </li>
+        <li><a href="/">Logout</a></li>
+      </ul>
     );
   }
 }
