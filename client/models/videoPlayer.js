@@ -1,7 +1,77 @@
+const data = {
+  channel_id: 1,
+  channel_name: 'land',
+  background: '../../assets/land_background.jpg',
+  videos: [{
+    url: 'OMflBAXJJKc',
+    time_based_likes: [{
+      id: 1,
+      start: 43,
+      stop: 48,
+      video_id: 1,
+      users: [1, 2, 4],
+    }, {
+      id: 2,
+      start: 74,
+      stop: 82,
+      video_id: 2,
+      users: [2, 3, 4],
+    }],
+  }, {
+    url: 'x76VEPXYaI0',
+    time_based_likes: [{
+      id: 3,
+      start: 38,
+      stop: 42,
+      video_id: 2,
+      users: [1, 3, 4],
+    }],
+  }, {
+    url: 'evj6y2xZCnM',
+    time_based_likes: [{
+      id: 4,
+      start: 70,
+      stop: 73,
+      video_id: 3,
+      users: [2, 5],
+    }],
+  }],
+};
+
+
+
+
+
+
+
+
 let player;
 let totalTime;
 let seek = false;
 let offset = 0;
+let momentList = [];
+
+let Moment = function(element, moment) {
+  let momentObj = moment;
+
+  element.click(function() {
+    console.log('Like Count', momentObj.users);
+  });
+  
+  function hitTest(time) {
+    if (time > momentObj.start && time < momentObj.stop) {
+      console.log('hit', momentObj.id);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  return {
+    render: element,
+    hitTest: hitTest,
+  }
+};
 
 // elements
 const playHead = document.getElementById('playHead');
@@ -13,20 +83,34 @@ const tag = document.createElement('script');
 tag.src = 'https://www.youtube.com/iframe_api';
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-// The API will call this function when the video player is ready.
 function onPlayerReady(event) {
   event.target.playVideo();
   event.target.mute();
   totalTime = event.target.getDuration();
+
+  data.videos[0].time_based_likes.forEach(moment => {
+    let newMoment = new Moment($('<div>').html(moment.likes), moment);
+    let mWidth = (moment.stop - moment.start) / totalTime;
+    let mLeft = moment.start / totalTime;
+    $('#moments').append(newMoment.render);
+    momentList.push(newMoment);
+    newMoment.render.addClass('moment');
+    newMoment.render.css({
+      position: 'absolute',
+      left: `${mLeft * 100}%`,
+      width: `${mWidth * 100}%`,
+    });
+  });
 }
 
-// The API calls this function when the player's state changes.
-// The function indicates that when playing a video (state=1),
-// the player should play for six seconds and then stop.
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.PLAYING) {
     window.setInterval(() => {
       const percent = (event.target.getCurrentTime() / totalTime) * 100;
+
+      momentList.forEach(moment => {
+        moment.hitTest(event.target.getCurrentTime());
+      });
 
       if (!seek) {
         playHead.style.left = `${percent}%`;
@@ -35,8 +119,6 @@ function onPlayerStateChange(event) {
   }
 }
 
-// This function creates an <iframe> (and YouTube player)
-// after the API code downloads.
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
     height: '390',
@@ -85,16 +167,16 @@ controls.addEventListener('mousemove', (e) => {
   }
 });
 
-$.ajax({
-  url: '/channel',
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  data: JSON.stringify({
-    channel_id: 1,
-    user_id: 1,
-  }),
-}).then(function(data) {
-  console.log(data);
-});
+// $.ajax({
+//   url: 'http://localhost:8000/channel',
+//   method: 'POST',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   data: JSON.stringify({
+//     channel_id: 1,
+//     user_id: 1,
+//   }),
+// }).then(function(data) {
+//   console.log(data);
+// });
