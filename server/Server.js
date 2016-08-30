@@ -221,17 +221,6 @@ app.get('/channel/:id', (req, res) => {
   });
 });
 
-// Old, and stinky:
-// app.post('/channel', (req, res) => {
-//   // const userId = req.body.user_id; <-- leaving in for Authentication (later)
-
-//   // Build channel object for response
-//   db.getChannelById(req.body.channel_id)
-//   .then(channelResObj => {
-//     res.send(channelResObj);
-//   });
-// });
-
 /*
   *********************************************
   Responds to requests for user information
@@ -279,28 +268,10 @@ app.get('/likes', (req, res) => {
 */
 
 app.post('/likes/create', (req, res) => {
-  const newLike = req.body;
-
-  newLike.users = [newLike.user_id];
-  delete newLike.user_id;
-
-  // Check to see if this like already exists
-  const checkLike = likes.filter(like =>
-    like.start === newLike.start &&
-    like.stop === newLike.stop &&
-    like.video_id === newLike.video_id)[0];
-
-  // Validation: create new like if it doesn't already exist
-  if (!checkLike) {
-    newLike.id = likes.length + 1;
-    // push new like to database
-    likes.push(newLike);
-  } else {
-    // if like already exists, set return object's id to match
-    newLike.id = checkLike.id;
-  }
-
-  res.send(newLike);
+  db.createLike(req.body)
+  .then(newLike => {
+    res.send(newLike);
+  });
 });
 
 /*
@@ -323,17 +294,22 @@ app.post('/likes/create', (req, res) => {
 */
 
 app.post('/likes/update', (req, res) => {
-  const userId = +req.body.user_id;
-  const likeId = +req.body.like_id;
+  // const userId = +req.body.user_id;
+  // const likeId = +req.body.like_id;
 
-  const currentLikeObj = likes.filter(element => element.id === likeId)[0];
+  // const currentLikeObj = likes.filter(element => element.id === likeId)[0];
 
-  currentLikeObj.users.push(userId);
-  currentLikeObj.users = currentLikeObj.users
-    .filter((element, index, array) => array.indexOf(element) === index)
-    .sort((a, b) => (a - b));
+  // currentLikeObj.users.push(userId);
+  // currentLikeObj.users = currentLikeObj.users
+  //   .filter((element, index, array) => array.indexOf(element) === index)
+  //   .sort((a, b) => (a - b));
 
-  res.send(JSON.stringify({ id: currentLikeObj.id, users: currentLikeObj.users }));
+  // res.send(JSON.stringify({ id: currentLikeObj.id, users: currentLikeObj.users }));
+
+  db.updateLike(req.body)
+  .then(newLike => {
+    res.send(newLike);
+  });
 });
 
 /*
