@@ -9,6 +9,10 @@ export default class NavBar extends React.Component {
     };
   }
 
+  componentDidMount() {
+    $('.dropdown').foundation();
+  }
+
   render() {
     return (
       <ul className="dropdown menu" data-dropdown-menu>
