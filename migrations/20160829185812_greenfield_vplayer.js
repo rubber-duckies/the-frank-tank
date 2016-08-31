@@ -19,6 +19,7 @@ exports.up = (knex, Promise) => Promise.all([
     table.integer('start_time');
     table.integer('stop_time');
     table.integer('video_id');
+    table.integer('channel_id');
   }),
   knex.schema.createTableIfNotExists('likes_by_user', table => {
     table.integer('user_id');
