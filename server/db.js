@@ -79,28 +79,35 @@ knex.getLikesByChannel = (channelId) => {
   });
 };
 
+// Work in-progress:
+// knex.getDefaultChannel = () => {
+//   let channelResObj = {};
+//   let likesArray = [];
+//   let videosArray = [];
+// };
+
 knex.getChannelById = (channelId) => {
   let channelResObj = {};
-  let arrayOfLikes = [];
-  let arrayOfVideos = [];
+  let likesArray = [];
+  let videosArray = [];
 
   // Build channel object by channel id
   return knex.getLikesByChannel(channelId)
-  .then(likesArray => {
-    arrayOfLikes = likesArray;
+  .then(likes => {
+    likesArray = likes;
     return knex.getVideosByChannel(channelId);
   })
-  .then(videosArray => {
-    videosArray.forEach(video => {
+  .then(videos => {
+    videos.forEach(video => {
       video.time_based_likes = video.time_based_likes
-      .concat(arrayOfLikes.filter(e => e.video_id === video.id));
+      .concat(likesArray.filter(e => e.video_id === video.id));
     });
-    arrayOfVideos = videosArray;
+    videosArray = videos;
     return knex('channels').where('id', channelId);
   })
   .then(channel => {
     channelResObj = channel[0];
-    channelResObj.videos = arrayOfVideos;
+    channelResObj.videos = videosArray;
     return channelResObj;
   });
 };
@@ -156,7 +163,11 @@ knex.updateLike = (obj) => knex('likes_by_user').where(obj)
 
 // The init function for populating the database with dummy information
 knex.initDB = () => Promise.all([
-  knex('channels').insert({ id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg' }),
+  knex('channels').insert([
+    { id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg' },
+    { id: 2, name: 'sea', background: 'https://upload.wikimedia.org/wikipedia/commons/5/53/GabrielMedina-001.jpg' },
+    { id: 3, name: 'air', background: 'https://i.ytimg.com/vi/apYEQlGlUAY/maxresdefault.jpg' },
+  ]),
   knex('users').insert([
     { name: 'Joe' },
     { name: 'Frank' },
@@ -168,34 +179,86 @@ knex.initDB = () => Promise.all([
     { url: 'OMflBAXJJKc', channel_id: 1 },
     { url: 'x76VEPXYaI0', channel_id: 1 },
     { url: 'evj6y2xZCnM', channel_id: 1 },
+    { url: '5XpU5M0ZCKM', channel_id: 2 },
+    { url: '-hfKtUT4ISs', channel_id: 2 },
+    { url: 'JYYsAxC0Dic', channel_id: 2 },
+    { url: 'rbFvzRsDBN4', channel_id: 3 },
+    { url: '-C_jPcUkVrM', channel_id: 3 },
+    { url: 'FHtvDA0W34I', channel_id: 3 },
   ]),
   knex('likes').insert([
     { start_time: 43, stop_time: 48, video_id: 1, channel_id: 1 },
     { start_time: 74, stop_time: 82, video_id: 1, channel_id: 1 },
     { start_time: 38, stop_time: 42, video_id: 2, channel_id: 1 },
     { start_time: 70, stop_time: 90, video_id: 3, channel_id: 1 },
+    { start_time: 29, stop_time: 52, video_id: 4, channel_id: 2 },
+    { start_time: 80, stop_time: 98, video_id: 4, channel_id: 2 },
+    { start_time: 147, stop_time: 157, video_id: 5, channel_id: 2 },
+    { start_time: 11, stop_time: 34, video_id: 6, channel_id: 2 },
+    { start_time: 20, stop_time: 38, video_id: 7, channel_id: 3 },
+    { start_time: 52, stop_time: 80, video_id: 7, channel_id: 3 },
+    { start_time: 170, stop_time: 194, video_id: 7, channel_id: 3 },
+    { start_time: 95, stop_time: 116, video_id: 8, channel_id: 3 },
+    { start_time: 47, stop_time: 64, video_id: 9, channel_id: 3 },
   ]),
   knex('likes_by_user').insert([
     { user_id: 1, likes_id: 1 },
-    { user_id: 1, likes_id: 3 },
     { user_id: 2, likes_id: 1 },
-    { user_id: 2, likes_id: 2 },
-    { user_id: 2, likes_id: 4 },
-    { user_id: 3, likes_id: 2 },
-    { user_id: 3, likes_id: 3 },
     { user_id: 4, likes_id: 1 },
+    { user_id: 2, likes_id: 2 },
+    { user_id: 3, likes_id: 2 },
     { user_id: 4, likes_id: 2 },
+    { user_id: 1, likes_id: 3 },
+    { user_id: 3, likes_id: 3 },
     { user_id: 4, likes_id: 3 },
+    { user_id: 2, likes_id: 4 },
+    { user_id: 5, likes_id: 4 },
+    { user_id: 1, likes_id: 5 },
+    { user_id: 3, likes_id: 5 },
+    { user_id: 4, likes_id: 5 },
+    { user_id: 2, likes_id: 6 },
+    { user_id: 4, likes_id: 6 },
+    { user_id: 5, likes_id: 6 },
+    { user_id: 1, likes_id: 7 },
+    { user_id: 2, likes_id: 7 },
+    { user_id: 2, likes_id: 8 },
+    { user_id: 4, likes_id: 8 },
+    { user_id: 5, likes_id: 8 },
+    { user_id: 1, likes_id: 9 },
+    { user_id: 2, likes_id: 9 },
+    { user_id: 2, likes_id: 10 },
+    { user_id: 3, likes_id: 10 },
+    { user_id: 4, likes_id: 10 },
+    { user_id: 2, likes_id: 11 },
+    { user_id: 5, likes_id: 11 },
+    { user_id: 2, likes_id: 12 },
+    { user_id: 3, likes_id: 12 },
+    { user_id: 4, likes_id: 12 },
+    { user_id: 5, likes_id: 12 },
+    { user_id: 2, likes_id: 13 },
+    { user_id: 3, likes_id: 13 },
+    { user_id: 4, likes_id: 13 },
   ]),
 ]);
 
+// deletes all values from each table and resets their respective 'id' counters
 knex.clear = () => Promise.all([
-  knex('channels').delete(),
-  knex('users').delete(),
-  knex('videos').delete(),
-  knex('likes').delete(),
-  knex('likes_by_user').delete(),
-  knex('ignores').delete(),
+  knex('channels').truncate(),
+  knex('users').truncate(),
+  knex('videos').truncate(),
+  knex('likes').truncate(),
+  knex('likes_by_user').truncate(),
+  knex('ignores').truncate(),
 ]);
+
+// Initializes database to dummy values listed above
+const runInitDB = () => {
+  knex.clear()
+  .then(() => knex.initDB())
+  .then(() => console.log('Database initialized!'));
+};
+
+// run init function!
+runInitDB();
 
 module.exports = knex;
