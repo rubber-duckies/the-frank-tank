@@ -38,6 +38,7 @@ const serverMessage = `Listening on port: ${serverUrl}`;
 
 // background image url: https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg
 
+/*
 const channels = [
   { id: 1, name: 'land', background: path.join(__dirname, '../assets/land_background.jpg') },
 ];
@@ -108,6 +109,7 @@ const dummyObj = {
     }],
   }],
 };
+*/
 
 /*
   ****************
@@ -130,7 +132,7 @@ app.use(express.static(path.join(__dirname, '../assets')));
   *******************************************
   Browserify and Babelify all files for React
   *******************************************
- */
+*/
 
 app.get('/app-bundle.js',
   browserify(path.join(__dirname, '../client/main.js'), {
@@ -139,11 +141,11 @@ app.get('/app-bundle.js',
 );
 
 /*
-  *********************************
+  ***********************************************************************
   Initializes interface.
 
   Response object:  Index.html file
-  *********************************
+  ***********************************************************************
 */
 
 app.get('/', (req, res) => {
@@ -151,43 +153,12 @@ app.get('/', (req, res) => {
 });
 
 /*
-  *********************************************
-  Responds to requests for user information
-
-  GET:
-    Response object: array of all current users:
-      {
-        id: user id,
-        name: user name
-      }
-
-  POST:
-    Request object (from client):
-      {
-        name: name of user to add
-      }
-
-    Response object:
-      {
-        id: new user's id,
-        name: new user's name
-      }
-  **********************************************
-*/
-
-// app.get('/users', (req, res) => {
-//   db.getAllUsers()
-//   .then(usersResObj => {
-//     res.send(usersResObj);
-//   });
-// });
-
-/*
-  ******************************************************************
+  ***********************************************************************
   Responds to requests for specific channel.
 
-  Videos are searched for by the following keywords, prepended with "extreme":
-  - sorted by # of views, maybe randomized?
+  Videos are searched for by the following criteria
+    - prepended with "extreme"
+    - sorted by # of views, maybe randomized?
 
   GET:
     Response object:
@@ -201,19 +172,17 @@ app.get('/', (req, res) => {
             time_based_likes: array of time-based like objects:
               {
                 id: current time-based like id,
-                start: like start time (in seconds from beginning of video),
-                stop: like stop time (in seconds from beginning of video),
+                start_time: like start time (in seconds),
+                stop_time: like stop time (in seconds),
                 video_id: current video id,
                 users: array of user ids that have like this video
               }
           }
       }
-  ******************************************************************
+  ***********************************************************************
 */
 
 app.get('/channel/:id', (req, res) => {
-  // const userId = req.body.user_id; <-- leaving in for Authentication (later)
-
   // Build channel object for response
   db.getChannelById(req.params.id)
   .then(channelResObj => {
@@ -222,8 +191,8 @@ app.get('/channel/:id', (req, res) => {
 });
 
 /*
-  *********************************************
-  Responds to requests for user information
+  ***********************************************************************
+  Responds to requests for time-based likes information
 
   GET:
     Response object: array of all time-based likes:
@@ -234,18 +203,20 @@ app.get('/channel/:id', (req, res) => {
         video_id: current video id,
         likes: array of user ids that have like this video
       }
-  **********************************************
+  ***********************************************************************
 */
 
-app.get('/likes', (req, res) => {
-  db.getAllLikes().then((likesArray) => {
+app.get('/channel/:id/likes', (req, res) => {
+  db.getLikesByChannel(req.params.id).then((likesArray) => {
     res.send(likesArray);
   });
 });
 
 /*
-  **************************************************************
+  ***********************************************************************
   Responds to requests to create time-based likes on user click.
+
+  Validation implemented to prevent duplication.
 
   POST:
     Request object (from client):
@@ -254,6 +225,7 @@ app.get('/likes', (req, res) => {
         stop: like stop time (in seconds from beginning of video),
         user_id: current user id
         video_id: current video id
+        channel_id: current channel id
       }
 
     Response object:
@@ -262,9 +234,10 @@ app.get('/likes', (req, res) => {
         start: like start time (in seconds from beginning of video),
         stop: like stop time (in seconds from beginning of video),
         video_id: current video id,
+        channel_id: current channel id,
         likes: array of user ids that have like this video
       }
-  **************************************************************
+  ***********************************************************************
 */
 
 app.post('/likes/create', (req, res) => {
@@ -275,8 +248,10 @@ app.post('/likes/create', (req, res) => {
 });
 
 /*
-  *********************************************************************
-  Responds to requests to update time-based likes on user click
+  ***********************************************************************
+  Responds to requests to update time-based likes on user click.
+
+  Validation implemented to prevent duplication.
 
   POST:
     Request object (from client):
@@ -290,22 +265,10 @@ app.post('/likes/create', (req, res) => {
         id: current time-based like id,
         users: array containing all user ids that have liked (no repeats)
       }
-  *********************************************************************
+  ***********************************************************************
 */
 
 app.post('/likes/update', (req, res) => {
-  // const userId = +req.body.user_id;
-  // const likeId = +req.body.like_id;
-
-  // const currentLikeObj = likes.filter(element => element.id === likeId)[0];
-
-  // currentLikeObj.users.push(userId);
-  // currentLikeObj.users = currentLikeObj.users
-  //   .filter((element, index, array) => array.indexOf(element) === index)
-  //   .sort((a, b) => (a - b));
-
-  // res.send(JSON.stringify({ id: currentLikeObj.id, users: currentLikeObj.users }));
-
   db.updateLike(req.body)
   .then(newLike => {
     res.send(newLike);
