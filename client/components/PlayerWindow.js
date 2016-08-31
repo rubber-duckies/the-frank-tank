@@ -10,12 +10,16 @@ export default class PlayerWindow extends React.Component {
     };
   }
 
-  // componentWillMount() {
-    
-  // }
+  componentWillMount() {
+  }
 
   componentDidMount() {
     playerInit();
+  }
+
+  componentDidUpdate() {
+    console.log('player window', this.props.videos);
+    //RGXraFHbwD8
   }
 
   render() {
@@ -36,6 +40,7 @@ export default class PlayerWindow extends React.Component {
       <div>
         <div className="flex-video widescreen">
           <YouTube
+            //videoId={this.props.videos[0].url}
             videoId="RGXraFHbwD8"
             opts={opts}
             onReady={onReady}
