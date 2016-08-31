@@ -38,26 +38,19 @@ const data = {
   }],
 };
 
-
-
-
-
-
-
-
 let player;
 let totalTime;
 let seek = false;
 let offset = 0;
 let momentList = [];
 
-let Moment = function(element, moment) {
+let Moment = function (element, moment) {
   let momentObj = moment;
 
-  element.click(function() {
+  element.click(() => {
     console.log('Like Count', momentObj.users);
   });
-  
+
   function hitTest(time) {
     if (time > momentObj.start && time < momentObj.stop) {
       console.log('hit', momentObj.id);
@@ -70,23 +63,67 @@ let Moment = function(element, moment) {
   return {
     render: element,
     hitTest: hitTest,
-  }
+  };
 };
 
-// elements
-const playHead = document.getElementById('playHead');
-const timeline = document.getElementById('timeline');
-const controls = document.getElementById('playerControls');
-const firstScriptTag = document.getElementsByTagName('script')[0];
-const tag = document.createElement('script');
 
-tag.src = 'https://www.youtube.com/iframe_api';
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+export function playerInit() {
 
-function onPlayerReady(event) {
+  // elements
+  const playHead = document.getElementById('playHead');
+  const timeline = document.getElementById('timeline');
+  const controls = document.getElementById('playerControls');
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  const tag = document.createElement('script');
+
+  playHead.addEventListener('mousedown', () => {
+    seek = true;
+    // player.pauseVideo();
+  });
+
+  playHead.addEventListener('mouseup', () => {
+    seek = false;
+    const seekTime = player.getDuration() * offset; // changed player.getDuration() to totalTime
+    player.seekTo(seekTime, true);
+  });
+
+  controls.addEventListener('mousemove', (e) => {
+    const userOffset = (e.clientX - (timeline.offsetLeft + controls.offsetLeft));
+    offset = (userOffset) / timeline.offsetWidth;
+    if (offset > 1) {
+      offset = 1;
+    }
+
+    if (offset < 0) {
+      offset = 0;
+    }
+
+    if (seek) {
+      const offsetString = `${(offset * 100)}%`;
+      playHead.style.left = offsetString;
+    }
+  });
+
+  // $.ajax({
+  //   url: 'http://localhost:8000/channel',
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   data: JSON.stringify({
+  //     channel_id: 1,
+  //     user_id: 1,
+  //   }),
+  // }).then(function(data) {
+  //   console.log(data);
+  // });
+}
+
+export function onReady(event) {
   event.target.playVideo();
   event.target.mute();
   totalTime = event.target.getDuration();
+  player = event.target;
 
   data.videos[0].time_based_likes.forEach(moment => {
     let newMoment = new Moment($('<div>').html(moment.likes), moment);
@@ -103,7 +140,7 @@ function onPlayerReady(event) {
   });
 }
 
-function onPlayerStateChange(event) {
+export function onStateChange(event) {
   if (event.data === YT.PlayerState.PLAYING) {
     window.setInterval(() => {
       const percent = (event.target.getCurrentTime() / totalTime) * 100;
@@ -118,65 +155,3 @@ function onPlayerStateChange(event) {
     }, 1000);
   }
 }
-
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '390',
-    width: '640',
-    videoId: 'RGXraFHbwD8',
-    playerVars: {
-      controls: 0, // hide player controls
-      //start: 10, // set player start time
-      //end: 20, // set player end time
-      iv_load_policy: 3, // hide annotations
-      rel: 0, // hide related videos
-      showinfo: 0, // hide video title
-    },
-    events: {
-      onReady: onPlayerReady,
-      onStateChange: onPlayerStateChange,
-    }
-  });
-}
-
-playHead.addEventListener('mousedown', () => {
-  seek = true;
-  // player.pauseVideo();
-});
-
-playHead.addEventListener('mouseup', () => {
-  seek = false;
-  const seekTime = player.getDuration() * offset;
-  player.seekTo(seekTime, true);
-});
-
-controls.addEventListener('mousemove', (e) => {
-  const userOffset = (e.clientX - (timeline.offsetLeft + controls.offsetLeft));
-  offset = (userOffset) / timeline.offsetWidth;
-  if (offset > 1) {
-    offset = 1;
-  }
-
-  if (offset < 0) {
-    offset = 0;
-  }
-
-  if (seek) {
-    const offsetString = `${(offset * 100)}%`;
-    playHead.style.left = offsetString;
-  }
-});
-
-// // $.ajax({
-// //   url: 'http://localhost:8000/channel',
-// //   method: 'POST',
-// //   headers: {
-// //     'Content-Type': 'application/json',
-// //   },
-// //   data: JSON.stringify({
-// //     channel_id: 1,
-// //     user_id: 1,
-// //   }),
-// // }).then(function(data) {
-// //   console.log(data);
-// // });
