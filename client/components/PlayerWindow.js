@@ -7,6 +7,7 @@ export default class PlayerWindow extends React.Component {
     super(props);
     this.state = {
       user: 'RubberDucky',
+      currentVideo: '',
     };
   }
 
@@ -19,10 +20,10 @@ export default class PlayerWindow extends React.Component {
 
   componentDidUpdate() {
     console.log('player window', this.props.videos);
-    //RGXraFHbwD8
+
   }
 
-  render() {
+  renderVideo() {
     const opts = {
       height: '390',
       width: '640',
@@ -36,17 +37,26 @@ export default class PlayerWindow extends React.Component {
       },
     };
 
+    if (this.props.videos.length === 0) {
+      return <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>;
+    }
+
+    return (
+      <YouTube
+        videoId={this.props.videos[0].url}
+        opts={opts}
+        onReady={onReady}
+        onStateChange={onStateChange}
+        className="player"
+      />
+    );
+  }
+
+  render() {
     return (
       <div>
         <div className="flex-video widescreen">
-          <YouTube
-            //videoId={this.props.videos[0].url}
-            videoId="RGXraFHbwD8"
-            opts={opts}
-            onReady={onReady}
-            onStateChange={onStateChange}
-            className="player"
-          />
+          {this.renderVideo()}
         </div>
         <section className="player-controls" id="playerControls">
           <div className="timeline" id="timeline">

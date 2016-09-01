@@ -9,6 +9,7 @@ export default class App extends React.Component {
       user: 'Frank',
       background: '',
       videos: [],
+      channel: '',
     };
   }
 
@@ -28,6 +29,7 @@ export default class App extends React.Component {
       this.setState({ 
         background: data.background,
         videos: data.videos,
+        channel: data.name,
       });
       $('body').css('background-image', `url(${this.state.background})`);
     });
@@ -47,6 +49,7 @@ export default class App extends React.Component {
 
         <div className="container">
           <div className="row column">
+            <h2>{this.state.channel}</h2>
             <PlayerWindow videos={this.state.videos} />
           </div>
         </div>
