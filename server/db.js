@@ -211,6 +211,16 @@ knex.getChannelById = (channelId) => {
 
 /*
   ***********************************************************************
+  What do I do?
+  ***********************************************************************
+*/
+
+knex.addVideos = (videoUrl, channelId) =>
+  knex('videos').insert({ url: videoUrl, channel_id: channelId });
+
+
+/*
+  ***********************************************************************
 
   What do I do?
 

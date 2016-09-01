@@ -24,8 +24,9 @@ const babelify = require('babelify');
 const browserify = require('browserify-middleware');
 const db = require('./db');
 const google = require('googleapis');
+
 const auth = 'AIzaSyDshEQnA__mSxXLnmrJTG-ZsEGeJ0J32BA';
-const youtube = google.youtube({ version: 'v3', auth: auth });
+const youtube = google.youtube({ version: 'v3', auth });
 
 const app = express();
 
@@ -321,6 +322,12 @@ app.get('/db_init', (req, res) => {
     res.status(404).send(err);
   });
 });
+
+/*
+  ***********************************************************************
+  Calls the Youtube search API, and returns array of video ids
+  ***********************************************************************
+*/
 
 app.get('/videos', (req, res) => {
   let q = 'extreme basejumping -fail -funny';
