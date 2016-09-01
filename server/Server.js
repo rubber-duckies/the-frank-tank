@@ -23,6 +23,9 @@ const bodyParser = require('body-parser');
 const babelify = require('babelify');
 const browserify = require('browserify-middleware');
 const db = require('./db');
+const google = require('googleapis');
+const auth = 'AIzaSyDshEQnA__mSxXLnmrJTG-ZsEGeJ0J32BA';
+const youtube = google.youtube({ version: 'v3', auth: auth });
 
 const app = express();
 
@@ -319,6 +322,29 @@ app.get('/db_init', (req, res) => {
   });
 });
 
+app.get('/videos', (req, res) => {
+  let q = 'extreme basejumping -fail -funny';
+  const params = {
+    q,
+    order: 'viewCount',
+    type: 'video',
+    videoDefinition: 'high',
+    videoDuration: 'medium',
+    fields: 'items/id',
+    videoDimension: '2d',
+    videoEmbeddable: 'true',
+    part: 'snippet',
+  };
+
+  youtube.search.list(params, (err, resp) => {
+    if (err) {
+    console.log('Encountered error', err);
+    } else {
+      console.log('search: ', resp);
+      res.status(200).send(resp);
+    }
+  });
+});
 /*
   *******************************************************************
   Spin up server on either NODE environmental variable or 8000(local)
