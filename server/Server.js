@@ -184,10 +184,19 @@ app.get('/', (req, res) => {
 
 app.get('/channel/:id', (req, res) => {
   // Build channel object for response
-  db.getChannelById(req.params.id)
-  .then(channelResObj => {
-    res.send(channelResObj);
-  });
+  if (req.params.id === '1' || req.params.id === '2' || req.params.id === '3') {
+    db.getChannelById(req.params.id)
+    .then(channelResObj => {
+      res.send(channelResObj);
+    });
+  } else if (req.params.id === 'default') {
+    db.getDefaultChannel()
+    .then(channelResObj => {
+      res.send(channelResObj);
+    });
+  } else {
+    res.status(404).send('Not a proper channel!');
+  }
 });
 
 /*
@@ -207,9 +216,18 @@ app.get('/channel/:id', (req, res) => {
 */
 
 app.get('/channel/:id/likes', (req, res) => {
-  db.getLikesByChannel(req.params.id).then((likesArray) => {
-    res.send(likesArray);
-  });
+  if (req.params.id === '1' || req.params.id === '2' || req.params.id === '3') {
+    db.getLikesByChannel(req.params.id).then((likesArray) => {
+      res.send(likesArray);
+    });
+  } else if (req.params.id === 'default') {
+    db.getAllLikes()
+    .then(likesArray => {
+      res.send(likesArray);
+    });
+  } else {
+    res.status(404).send('Not a proper channel!');
+  }
 });
 
 /*
@@ -272,6 +290,23 @@ app.post('/likes/update', (req, res) => {
   db.updateLike(req.body)
   .then(newLike => {
     res.send(newLike);
+  });
+});
+
+/*
+  ***********************************************************************
+  Provides an endpoint to initialize the database with dummy information
+  ***********************************************************************
+*/
+
+app.get('/db_init', (req, res) => {
+  db.runInitDB()
+  .then(message => {
+    console.log(message);
+    res.send(message);
+  })
+  .catch(err => {
+    res.status(404).send(err);
   });
 });
 

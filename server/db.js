@@ -39,6 +39,7 @@ Using PostgreSQL.  Minimal installation instructions:
 
 */
 
+const _ = require('underscore');
 const config = require('../knexfile');
 
 const env = 'development';
@@ -48,14 +49,15 @@ knex.migrate.latest([config]);
 
 // Welcome to FUN WITH PROMISES!
 
-knex.getLikesByVideo = (videoId) => knex('likes').where('video_id', videoId);
+// knex.getLikesByVideo = (videoId) => knex('likes').where('video_id', videoId);
 
-knex.getAllUsers = () => knex('users');
+// knex.getAllUsers = () => knex('users');
 
 knex.getVideosByChannel = (channelId) => knex('videos').where('channel_id', channelId)
-  .then(videosArray => {
-    videosArray.forEach(video => {
-      video.time_based_likes = [];
+  .then(videos => {
+    const videosArray = videos;
+    videos.forEach((video, index) => {
+      videosArray[index].time_based_likes = [];
     });
     return videosArray;
   });
@@ -64,27 +66,56 @@ knex.getUserLikesArray = (likeId) =>
   knex.select('user_id').from('likes_by_user').where('likes_id', likeId)
   .then(userLikes => userLikes.map(element => element.user_id));
 
-knex.getLikesByChannel = (channelId) => {
-  let arrayOfLikes = [];
-  return knex('likes').where('channel_id', channelId)
-  .then((likesArray) => {
-    arrayOfLikes = likesArray;
+knex.getAllLikes = () => {
+  let likesArray = [];
+  return knex('likes')
+  .then(likes => {
+    likesArray = likes;
     return Promise.all(likesArray.map(like => knex.getUserLikesArray(like.id)));
   })
   .then(userIds => {
-    arrayOfLikes.forEach((like, index) => {
-      like.users = userIds[index];
+    const tempArray = likesArray;
+    tempArray.forEach((like, index) => {
+      likesArray[index].users = userIds[index];
     });
-    return arrayOfLikes;
+    return likesArray;
   });
 };
 
-// Work in-progress:
-// knex.getDefaultChannel = () => {
-//   let channelResObj = {};
-//   let likesArray = [];
-//   let videosArray = [];
-// };
+knex.getLikesByChannel = (channelId) => {
+  let likesArray = [];
+  return knex('likes').where('channel_id', channelId)
+  .then((likes) => {
+    likesArray = likes;
+    return Promise.all(likes.map(like => knex.getUserLikesArray(like.id)));
+  })
+  .then(userIds => {
+    const tempArray = likesArray;
+    tempArray.forEach((like, index) => {
+      likesArray[index].users = userIds[index];
+    });
+    return likesArray;
+  });
+};
+
+knex.getDefaultChannel = () => {
+  let likesArray = [];
+  let videosArray = [];
+  return knex.getAllLikes()
+  .then(likes => {
+    likesArray = likes;
+    return knex('videos');
+  })
+  .then(videos => {
+    videosArray = videos;
+    videos.forEach((video, index) => {
+      videosArray[index].time_based_likes = [];
+      videosArray[index].time_based_likes = video.time_based_likes
+      .concat(likesArray.filter(like => like.video_id === video.id));
+    });
+    return _.shuffle(videosArray).slice(0, 6);
+  });
+};
 
 knex.getChannelById = (channelId) => {
   let channelResObj = {};
@@ -98,11 +129,11 @@ knex.getChannelById = (channelId) => {
     return knex.getVideosByChannel(channelId);
   })
   .then(videos => {
-    videos.forEach(video => {
-      video.time_based_likes = video.time_based_likes
+    videosArray = videos;
+    videos.forEach((video, index) => {
+      videosArray[index].time_based_likes = video.time_based_likes
       .concat(likesArray.filter(e => e.video_id === video.id));
     });
-    videosArray = videos;
     return knex('channels').where('id', channelId);
   })
   .then(channel => {
@@ -152,7 +183,6 @@ knex.updateLike = (obj) => knex('likes_by_user').where(obj)
     if (queryData.length) {
       throw knex.getUserLikesArray(queryData[0].likes_id);
     } else {
-      console.log('after query: ', obj);
       return knex('likes_by_user').insert(obj);
     }
   })
@@ -252,13 +282,8 @@ knex.clear = () => Promise.all([
 ]);
 
 // Initializes database to dummy values listed above
-const runInitDB = () => {
-  knex.clear()
+knex.runInitDB = () => knex.clear()
   .then(() => knex.initDB())
-  .then(() => console.log('Database initialized!'));
-};
-
-// run init function!
-runInitDB();
+  .then(() => 'Database initialized!');
 
 module.exports = knex;
