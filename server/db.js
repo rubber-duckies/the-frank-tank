@@ -37,6 +37,11 @@ Using PostgreSQL.  Minimal installation instructions:
 
   -good luck with that
 
+Some background URLs for the default channel:
+  Kill the PacMan    : https://i.imgur.com/fa7mUp8.jpg
+  Portal             : https://i.imgur.com/gx9XCkA.jpg
+  Circuits(current)  : https://i.imgur.com/PmqssGZ.jpg
+
 */
 
 const _ = require('underscore');
@@ -48,10 +53,6 @@ const knex = require('knex')(config[env]);
 knex.migrate.latest([config]);
 
 // Welcome to FUN WITH PROMISES!
-
-// knex.getLikesByVideo = (videoId) => knex('likes').where('video_id', videoId);
-
-// knex.getAllUsers = () => knex('users');
 
 knex.getVideosByChannel = (channelId) => knex('videos').where('channel_id', channelId)
   .then(videos => {
@@ -99,6 +100,11 @@ knex.getLikesByChannel = (channelId) => {
 };
 
 knex.getDefaultChannel = () => {
+  const channelResObj = {
+    id: 0,
+    name: 'default',
+    background: 'https://i.imgur.com/PmqssGZ.jpg',
+  };
   let likesArray = [];
   let videosArray = [];
   return knex.getAllLikes()
@@ -113,7 +119,8 @@ knex.getDefaultChannel = () => {
       videosArray[index].time_based_likes = video.time_based_likes
       .concat(likesArray.filter(like => like.video_id === video.id));
     });
-    return _.shuffle(videosArray).slice(0, 6);
+    channelResObj.videos = _.shuffle(videosArray).slice(0, 6);
+    return channelResObj;
   });
 };
 
@@ -145,8 +152,8 @@ knex.getChannelById = (channelId) => {
 
 knex.createLike = (like) => {
   const likeObj = {
-    start_time: like.start,
-    stop_time: like.stop,
+    start_time: like.start_time,
+    stop_time: like.stop_time,
     video_id: like.video_id,
     channel_id: like.channel_id,
   };

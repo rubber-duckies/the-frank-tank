@@ -155,6 +155,11 @@ app.get('/', (req, res) => {
 /*
   ***********************************************************************
   Responds to requests for specific channel.
+  Channels are:
+    0: default -> 5 videos randomly selected from other channels
+    1: land
+    2: sea
+    3: air
 
   Videos are searched for by the following criteria
     - prepended with "extreme"
@@ -168,13 +173,16 @@ app.get('/', (req, res) => {
         background: background image url or asset,
         videos: array of video objects:
           {
+            id: this video id,
             url: youtube url id,
+            channel_id: current channel id,
             time_based_likes: array of time-based like objects:
               {
                 id: current time-based like id,
                 start_time: like start time (in seconds),
                 stop_time: like stop time (in seconds),
                 video_id: current video id,
+                channel_id: current channel id
                 users: array of user ids that have like this video
               }
           }
@@ -202,15 +210,16 @@ app.get('/channel/:id', (req, res) => {
 /*
   ***********************************************************************
   Responds to requests for time-based likes information
+  Channel id "default" returns all time-based likes in the database
 
   GET:
     Response object: array of all time-based likes:
       {
         id: current time-based like id,
-        start: like start time (in seconds from beginning of video),
-        stop: like stop time (in seconds from beginning of video),
+        start_time: like start time (in seconds from beginning of video),
+        stop_time: like stop time (in seconds from beginning of video),
         video_id: current video id,
-        likes: array of user ids that have like this video
+        users: array of user ids that have like this video
       }
   ***********************************************************************
 */
@@ -239,8 +248,8 @@ app.get('/channel/:id/likes', (req, res) => {
   POST:
     Request object (from client):
       {
-        start: like start time (in seconds from beginning of video),
-        stop: like stop time (in seconds from beginning of video),
+        start_time: like start time (in seconds from beginning of video),
+        stop_time: like stop time (in seconds from beginning of video),
         user_id: current user id
         video_id: current video id
         channel_id: current channel id
@@ -249,11 +258,11 @@ app.get('/channel/:id/likes', (req, res) => {
     Response object:
       {
         id: current time-based like id,
-        start: like start time (in seconds from beginning of video),
-        stop: like stop time (in seconds from beginning of video),
+        start_time: like start time (in seconds from beginning of video),
+        stop_time: like stop time (in seconds from beginning of video),
         video_id: current video id,
         channel_id: current channel id,
-        likes: array of user ids that have like this video
+        users: array of user ids that have like this video
       }
   ***********************************************************************
 */
