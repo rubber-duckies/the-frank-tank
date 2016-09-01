@@ -20,7 +20,7 @@ const Moment = (element, moment) => {
 
   function hitTest(time) {
     if (time > momentObj.start_time && time < momentObj.stop_time) {
-      console.log('hit', momentObj.id);
+      //console.log('hit', momentObj.id);
       likeWindow.addClass('active');
       return true;
     } else {

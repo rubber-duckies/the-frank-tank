@@ -39,13 +39,18 @@ export default class PlayerWindow extends React.Component {
   handleEnd(event) {
     this.updateVideoList();
 
-    this.handleReadyState(event);
+    //this.handleReadyState(event);
   }
 
   handleReadyState(event) {
     if (this.state.currentVideo) {
       onReady(this.state.currentVideo, event);
     }
+  }
+
+  handleStateChange(event) {
+    onStateChange(event);
+    onReady(this.state.currentVideo, event);
   }
 
   renderVideo() {
@@ -71,7 +76,7 @@ export default class PlayerWindow extends React.Component {
         videoId={this.state.currentVideo.url}
         opts={opts}
         onReady={this.handleReadyState.bind(this)}
-        onStateChange={onStateChange}
+        onStateChange={this.handleStateChange.bind(this)}
         onEnd={this.handleEnd.bind(this)}
         onPlay={this.handlePlay}
         className="player"
