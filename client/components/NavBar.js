@@ -25,7 +25,7 @@ export default class NavBar extends React.Component {
             <li><a href="/channel/1">Land</a></li>
           </ul>
         </li>
-        <li><button onClick={changeChannel}>Logout</button></li>
+        <li><a href="/">Logout</a></li>
       </ul>
     );
   }
