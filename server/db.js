@@ -52,9 +52,25 @@ const knex = require('knex')(config[env]);
 
 knex.migrate.latest([config]);
 
-// Welcome to FUN WITH PROMISES!
+/*
+  Welcome to
+   ___  _ _  _ _   _ _ _  _  ___  _ _   ___  ___  ___  __ __  _  ___  ___  ___  _
+  | __>| | || \ | | | | || ||_ _|| | | | . \| . \| . ||  \  \| |/ __>| __>/ __>| |
+  | _> | ' ||   | | | | || | | | |   | |  _/|   /| | ||     || |\__ \| _> \__ \|_/
+  |_|  `___'|_\_| |__/_/ |_| |_| |_|_| |_|  |_\_\`___'|_|_|_||_|<___/|___><___/<_>
 
-knex.getVideosByChannel = (channelId) => knex('videos').where('channel_id', channelId)
+*/
+
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
+knex.getVideosByChannel = (channelId) =>
+  knex('videos').where('channel_id', channelId)
   .then(videos => {
     const videosArray = videos;
     videos.forEach((video, index) => {
@@ -63,12 +79,29 @@ knex.getVideosByChannel = (channelId) => knex('videos').where('channel_id', chan
     return videosArray;
   });
 
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
 knex.getUserLikesArray = (likeId) =>
   knex.select('user_id').from('likes_by_user').where('likes_id', likeId)
   .then(userLikes => userLikes.map(element => element.user_id));
 
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
 knex.getAllLikes = () => {
   let likesArray = [];
+
   return knex('likes')
   .then(likes => {
     likesArray = likes;
@@ -83,8 +116,17 @@ knex.getAllLikes = () => {
   });
 };
 
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
 knex.getLikesByChannel = (channelId) => {
   let likesArray = [];
+
   return knex('likes').where('channel_id', channelId)
   .then((likes) => {
     likesArray = likes;
@@ -99,14 +141,24 @@ knex.getLikesByChannel = (channelId) => {
   });
 };
 
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
 knex.getDefaultChannel = () => {
   const channelResObj = {
     id: 0,
     name: 'default',
     background: 'https://i.imgur.com/PmqssGZ.jpg',
   };
+
   let likesArray = [];
   let videosArray = [];
+
   return knex.getAllLikes()
   .then(likes => {
     likesArray = likes;
@@ -115,14 +167,21 @@ knex.getDefaultChannel = () => {
   .then(videos => {
     videosArray = videos;
     videos.forEach((video, index) => {
-      videosArray[index].time_based_likes = [];
-      videosArray[index].time_based_likes = video.time_based_likes
-      .concat(likesArray.filter(like => like.video_id === video.id));
+      videosArray[index].time_based_likes = []
+        .concat(likesArray.filter(like => like.video_id === video.id));
     });
     channelResObj.videos = _.shuffle(videosArray).slice(0, 6);
     return channelResObj;
   });
 };
+
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
 
 knex.getChannelById = (channelId) => {
   let channelResObj = {};
@@ -149,6 +208,14 @@ knex.getChannelById = (channelId) => {
     return channelResObj;
   });
 };
+
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
 
 knex.createLike = (like) => {
   const likeObj = {
@@ -185,7 +252,16 @@ knex.createLike = (like) => {
   );
 };
 
-knex.updateLike = (obj) => knex('likes_by_user').where(obj)
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
+knex.updateLike = (obj) =>
+  knex('likes_by_user').where(obj)
   .then(queryData => {
     if (queryData.length) {
       throw knex.getUserLikesArray(queryData[0].likes_id);
@@ -198,7 +274,14 @@ knex.updateLike = (obj) => knex('likes_by_user').where(obj)
   .catch(userIdArray =>
     userIdArray.then(idArray => ({ id: obj.likes_id, users: idArray })));
 
-// The init function for populating the database with dummy information
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
 knex.initDB = () => Promise.all([
   knex('channels').insert([
     { id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg' },
@@ -278,7 +361,14 @@ knex.initDB = () => Promise.all([
   ]),
 ]);
 
-// deletes all values from each table and resets their respective 'id' counters
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
 knex.clear = () => Promise.all([
   knex('channels').truncate(),
   knex('users').truncate(),
@@ -288,8 +378,16 @@ knex.clear = () => Promise.all([
   knex('ignores').truncate(),
 ]);
 
-// Initializes database to dummy values listed above
-knex.runInitDB = () => knex.clear()
+/*
+  ***********************************************************************
+
+  What do I do?
+
+  ***********************************************************************
+*/
+
+knex.runInitDB = () =>
+  knex.clear()
   .then(() => knex.initDB())
   .then(() => 'Database initialized!');
 
