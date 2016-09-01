@@ -8,6 +8,7 @@ export default class PlayerWindow extends React.Component {
     this.state = {
       user: 'RubberDucky',
       currentVideo: '',
+      videoList: [],
     };
   }
 
@@ -15,12 +16,41 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidMount() {
+    console.log('component mounted');
     playerInit();
   }
 
   componentDidUpdate() {
-    console.log('player window', this.props.videos);
+    console.log('component updating');
+    if (this.props.videos.length && !this.state.currentVideo) {
+      this.updateVideoList(this.props.videos);
+    }
+  }
 
+  updateVideoList(list) {
+    const updatedList = list || this.state.videoList;
+
+    this.setState({
+      currentVideo: updatedList.shift(),
+      videoList: updatedList,
+    });
+  }
+
+  handleEnd(event) {
+    this.updateVideoList();
+
+    //this.handleReadyState(event);
+  }
+
+  handleReadyState(event) {
+    if (this.state.currentVideo) {
+      onReady(this.state.currentVideo, event);
+    }
+  }
+
+  handleStateChange(event) {
+    onStateChange(event);
+    onReady(this.state.currentVideo, event);
   }
 
   renderVideo() {
@@ -37,16 +67,18 @@ export default class PlayerWindow extends React.Component {
       },
     };
 
-    if (this.props.videos.length === 0) {
+    if (!this.state.currentVideo.url) {
       return <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>;
     }
 
     return (
       <YouTube
-        videoId={this.props.videos[0].url}
+        videoId={this.state.currentVideo.url}
         opts={opts}
-        onReady={onReady}
-        onStateChange={onStateChange}
+        onReady={this.handleReadyState.bind(this)}
+        onStateChange={this.handleStateChange.bind(this)}
+        onEnd={this.handleEnd.bind(this)}
+        onPlay={this.handlePlay}
         className="player"
       />
     );
@@ -64,7 +96,12 @@ export default class PlayerWindow extends React.Component {
             <div className="playHead" id="playHead" />
           </div>
         </section>
-
+        <div id="stats">
+          <div>
+            <span id="timeElapsed"></span> / <span id="totalTime"></span>
+          </div>
+          <div id="percentageComplete"></div>
+        </div>
       </div>
     );
   }

@@ -1,61 +1,30 @@
-const data = {
-  channel_id: 1,
-  channel_name: 'land',
-  background: '../../assets/land_background.jpg',
-  videos: [{
-    url: 'OMflBAXJJKc',
-    time_based_likes: [{
-      id: 1,
-      start: 43,
-      stop: 48,
-      video_id: 1,
-      users: [1, 2, 4],
-    }, {
-      id: 2,
-      start: 74,
-      stop: 82,
-      video_id: 2,
-      users: [2, 3, 4],
-    }],
-  }, {
-    url: 'x76VEPXYaI0',
-    time_based_likes: [{
-      id: 3,
-      start: 38,
-      stop: 42,
-      video_id: 2,
-      users: [1, 3, 4],
-    }],
-  }, {
-    url: 'evj6y2xZCnM',
-    time_based_likes: [{
-      id: 4,
-      start: 70,
-      stop: 73,
-      video_id: 3,
-      users: [2, 5],
-    }],
-  }],
-};
-
 let player;
 let totalTime;
 let seek = false;
 let offset = 0;
 let momentList = [];
 
-let Moment = function (element, moment) {
-  let momentObj = moment;
+const Moment = (element, moment) => {
+  const momentObj = moment;
+
+  const likeWindow = $('<div>').addClass('likeWindow').html(`
+    ${momentObj.users.length}
+    <i class="fa fa-thumbs-up"></i>
+  `);
+
+  element.append(likeWindow);
 
   element.click(() => {
     console.log('Like Count', momentObj.users);
   });
 
   function hitTest(time) {
-    if (time > momentObj.start && time < momentObj.stop) {
-      console.log('hit', momentObj.id);
+    if (time > momentObj.start_time && time < momentObj.stop_time) {
+      //console.log('hit', momentObj.id);
+      likeWindow.addClass('active');
       return true;
     } else {
+      likeWindow.removeClass('active');
       return false;
     }
   }
@@ -78,12 +47,11 @@ export function playerInit() {
 
   playHead.addEventListener('mousedown', () => {
     seek = true;
-    // player.pauseVideo();
   });
 
   playHead.addEventListener('mouseup', () => {
     seek = false;
-    const seekTime = player.getDuration() * offset; // changed player.getDuration() to totalTime
+    const seekTime = totalTime * offset; // changed player.getDuration() to totalTime
     player.seekTo(seekTime, true);
   });
 
@@ -103,32 +71,21 @@ export function playerInit() {
       playHead.style.left = offsetString;
     }
   });
-
-  // $.ajax({
-  //   url: 'http://localhost:8000/channel',
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   data: JSON.stringify({
-  //     channel_id: 1,
-  //     user_id: 1,
-  //   }),
-  // }).then(function(data) {
-  //   console.log(data);
-  // });
 }
 
-export function onReady(event) {
+export function onReady(data, event) {
   event.target.playVideo();
+  //console.log(event.target.getPlayerState());
   event.target.mute();
   totalTime = event.target.getDuration();
   player = event.target;
 
-  data.videos[0].time_based_likes.forEach(moment => {
-    let newMoment = new Moment($('<div>').html(moment.likes), moment);
-    let mWidth = (moment.stop - moment.start) / totalTime;
-    let mLeft = moment.start / totalTime;
+
+  $('#moments').html('');
+  data.time_based_likes.forEach(moment => {
+    let newMoment = new Moment($('<div>').html(''), moment);
+    let mWidth = (moment.stop_time - moment.start_time) / totalTime;
+    let mLeft = moment.start_time / totalTime;
     $('#moments').append(newMoment.render);
     momentList.push(newMoment);
     newMoment.render.addClass('moment');
@@ -141,9 +98,16 @@ export function onReady(event) {
 }
 
 export function onStateChange(event) {
-  if (event.data === YT.PlayerState.PLAYING) {
+  console.log('playerState', event.target.getPlayerState());
+  totalTime = event.target.getDuration();
+
+  if (event.target.getPlayerState() === 1) {
     window.setInterval(() => {
       const percent = (event.target.getCurrentTime() / totalTime) * 100;
+
+      $('#timeElapsed').html(Math.ceil(event.target.getCurrentTime()));
+      $('#totalTime').html(Math.ceil(totalTime));
+      $('#percentageComplete').html(`${Math.ceil(percent)}%`);
 
       momentList.forEach(moment => {
         moment.hitTest(event.target.getCurrentTime());
@@ -153,5 +117,9 @@ export function onStateChange(event) {
         playHead.style.left = `${percent}%`;
       }
     }, 1000);
+  }
+
+  if (event.target.getPlayerState() === 5) {
+    event.target.playVideo();
   }
 }
