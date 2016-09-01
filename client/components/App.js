@@ -25,7 +25,6 @@ export default class App extends React.Component {
         user_id: 1,
       }),
     }).then(data => {
-      console.log('app', data);
       this.setState({ 
         background: data.background,
         videos: data.videos,
