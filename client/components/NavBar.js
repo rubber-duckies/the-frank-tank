@@ -1,5 +1,4 @@
 import React from 'react';
-import { changeChannel } from '../models/navModel';
 
 export default class NavBar extends React.Component {
   constructor(props) {
@@ -7,33 +6,38 @@ export default class NavBar extends React.Component {
     this.state = {
       user: 'RubberDucky',
     };
-
-    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
     $('.dropdown').foundation();
   }
 
-  handleClick(e) {
-    this.props.updateChannel(e.target.id);
-    // console.log(e.target.id);
+  handleChange(value) {
+    console.log('current target', value);
+    console.log('changeChannel', this.props.changeChannel);
+    this.props.changeChannel(value);
   }
 
   render() {
-    return ( 
-      <ul className="dropdown menu" data-dropdown-menu>
-        <li><a href="/">Home</a></li>
+    return (
+      <ul className="dropdown menu align-right" data-dropdown-menu>
+        <li><a href="/">Logout</a></li>
         <li className="is-dropdown-submenu-parent">
           <a>Channels</a>
           <ul className="menu">
-            <li><a onClick={this.props.changeChannel.bind(this.props.that, 2)}>Sea</a></li>
-            <li><a onClick={this.props.changeChannel.bind(this.props.that, 3)}>Air</a></li>
-            <li><a onClick={this.props.changeChannel.bind(this.props.that, 1)}>Land</a></li>
+            <li value="1" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Land</a></li>
+            <li value="2" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Sea</a></li>
+            <li value="3" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Air</a></li>
           </ul>
         </li>
-        <li><a href='/'>Logout</a></li>
+        <li value="'default'" onClick={(e) => this.handleChange(e.currentTarget.value)}>
+          <a>Home</a>
+        </li>
       </ul>
     );
   }
 }
+
+NavBar.propTypes = {
+  changeChannel: React.PropTypes.func,
+};

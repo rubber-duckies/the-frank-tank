@@ -1,62 +1,53 @@
 import React from 'react';
 import PlayerWindow from './PlayerWindow';
 import NavBar from './NavBar';
+import NavModel from '../models/navModel';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: 'Frank',
+      user: 'Joe',
       background: '',
       videos: [],
-      name: 'default',
-      id: 'default',
+      channel: '',
+      channel_id: 'default',
     };
-
-    this.handleChannelUpdate = this.handleChannelUpdate.bind(this);
   }
 
   componentDidMount() {
-    this.setChannel('default');
-  }
-
-  setChannel(channelId){
-    $.ajax({
-      url: 'http://localhost:8000/channel/' + channelId,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify({
-        channel_id: {channelId},
-        user_id: 1,
-      }),
-    }).then(data => {
-      //console.log(data.videos);
-      this.setState({ 
-        background: data.background,
-        videos: data.videos,
-        name: data.name,
-        id: data.id,
+    NavModel.changeChannel(this.state.channel_id)
+    .then(channelObj => {
+      this.setState({
+        background: channelObj.background,
+        videos: channelObj.videos,
+        channel: channelObj.name,
       });
       $('body').css('background-image', `url(${this.state.background})`);
     });
   }
 
-  changeChannel(channel_id) {
+  // now defunct?
+  setChannel(channelObj) {
     this.setState({
-      videos: [],
+      background: channelObj.background,
+      videos: channelObj.videos,
+      channel: channelObj.name,
     });
-
-    this.setChannel(channel_id);
+    $('body').css('background-image', `url(${this.state.background})`);
   }
 
-  handleChannelUpdate(id) {
-    // console.log('channel', id);
-    // this.setState({
-    //   id: id,
-    // });
-    this.getChannel(id);
+  changeChannel(channelId) {
+    NavModel.changeChannel(channelId)
+    .then(channelObj => {
+      this.setState({
+        background: channelObj.background,
+        videos: channelObj.videos,
+        channel: channelObj.name,
+        channel_id: channelId,
+      });
+      $('body').css('background-image', `url(${this.state.background})`);
+    });
   }
 
   render() {
@@ -66,7 +57,7 @@ export default class App extends React.Component {
           <div className="container">
             <div className="row column">
               <h1>The Frank Tank</h1>
-              <NavBar changeChannel={this.changeChannel} that={this}/>
+              <NavBar changeChannel={(channelId) => this.changeChannel(channelId)} />
             </div>
           </div>
         </header>
