@@ -1,6 +1,6 @@
 import React from 'react';
 import YouTube from 'react-youtube';
-import { playerInit, onReady, onStateChange, Moment } from '../models/videoModel.js';
+import { sendLike, Moment } from '../models/videoModel.js';
 
 export default class PlayerWindow extends React.Component {
   constructor(props) {
@@ -106,7 +106,7 @@ export default class PlayerWindow extends React.Component {
   }
 
   handleExtreme(e) {
-    if (!this.state.extreme) { 
+    if (!this.state.extreme) {
       this.setState({ extreme: true });
       e.target.classList.add('alert');
 
@@ -119,15 +119,27 @@ export default class PlayerWindow extends React.Component {
         $('#moments').append(this.extremeClip);
       }
     } else {
-      this.setState({ 
+      this.setState({
         extreme: false,
         extremeStop: this.player.getCurrentTime(),
       });
       e.target.classList.remove('alert');
+      console.log(this.state.currentVideo);
+      let newLike = {};
+      let endTime = this.player.getCurrentTime();
+
+      newLike.start_time = Math.ceil(this.state.extremeStart - 3);
+      newLike.stop_time = Math.ceil(endTime);
+      newLike.user_id = 1;
+      newLike.video_id = this.state.currentVideo.id;
+      newLike.channel_id = this.state.currentVideo.channel_id;
+      sendLike(newLike)
+        .then((resp) => {
+          console.log(resp);
+        });
     }
 
     console.log(this.state.extreme);
-
   }
 
   handleStateChange(event) {

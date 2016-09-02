@@ -1,3 +1,5 @@
+import $ from './lib/jquery';
+
 export const Moment = (element, moment) => {
   const momentObj = moment;
 
@@ -27,4 +29,16 @@ export const Moment = (element, moment) => {
     render: element,
     hitTest: hitTest,
   };
+};
+
+export const sendLike = (newLike) => {
+  return $.ajax({
+    url: 'http://localhost:8000/likes/create',
+    method: 'POST',
+    dataType: 'application/json',
+    data: JSON.stringify(newLike),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
