@@ -1,6 +1,7 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 import { sendLike, Moment } from '../models/videoModel.js';
+import $ from '../models/lib/jquery';
 
 export default class PlayerWindow extends React.Component {
   constructor(props) {
@@ -55,7 +56,6 @@ export default class PlayerWindow extends React.Component {
 
       console.log('this.props.videos', this.props.videos);
     }
-
   }
 
   updateVideoList(list) {
@@ -68,7 +68,7 @@ export default class PlayerWindow extends React.Component {
     });
   }
 
-  handleEnd(event) {
+  handleEnd() {
     this.setState({
       momentList: [],
     });
@@ -125,8 +125,8 @@ export default class PlayerWindow extends React.Component {
       });
       e.target.classList.remove('alert');
       console.log(this.state.currentVideo);
-      let newLike = {};
-      let endTime = this.player.getCurrentTime();
+      const newLike = {};
+      const endTime = this.player.getCurrentTime();
 
       newLike.start_time = Math.ceil(this.state.extremeStart - 3);
       newLike.stop_time = Math.ceil(endTime);
@@ -151,9 +151,13 @@ export default class PlayerWindow extends React.Component {
     if (event.target.getPlayerState() === 1) {
       window.setInterval(() => {
         const percent = (event.target.getCurrentTime() / this.state.totalTime) * 100;
+        const totalMinutes = (`0${Math.floor(this.state.totalTime / 60)}`).slice(-2);
+        const totalSeconds = (`0${Math.floor(this.state.totalTime % 60)}`).slice(-2);
+        const currentMinutes = (`0${Math.floor(event.target.getCurrentTime() / 60)}`).slice(-2);
+        const currentSeconds = (`0${Math.floor(event.target.getCurrentTime() % 60)}`).slice(-2);
 
-        $('#timeElapsed').html(Math.ceil(event.target.getCurrentTime()));
-        $('#totalTime').html(Math.ceil(this.state.totalTime));
+        $('#timeElapsed').html(`${currentMinutes}:${currentSeconds}`);
+        $('#totalTime').html(`${totalMinutes}:${totalSeconds}`);
         $('#percentageComplete').html(`${Math.ceil(percent)}%`);
 
         this.state.momentList.forEach(moment => {
@@ -223,7 +227,7 @@ export default class PlayerWindow extends React.Component {
     const opts = {
       height: '390',
       width: '640',
-      playerVars: { // https://developers.google.com/youtube/player_parameters 
+      playerVars: { // https://developers.google.com/youtube/player_parameters
         controls: 0, // hide player controls
         // start: 10, // set player start time
         // end: 20, // set player end time
@@ -234,7 +238,7 @@ export default class PlayerWindow extends React.Component {
     };
 
     if (!this.state.currentVideo.url) {
-      return <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>;
+      return <i className="fa fa-spinner fa-pulse fa-3x fa-fw" />;
     }
 
     return (
@@ -258,24 +262,36 @@ export default class PlayerWindow extends React.Component {
         </div>
         <section className="player-controls" id="playerControls" onMouseMove={this.handleMouseMove}>
           <div className="timeline" id="timeline">
-            <div id="moments"></div>
-            <div className="playHead" id="playHead" onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp} />
+            <div id="moments" />
+            <div
+              className="playHead"
+              id="playHead"
+              onMouseDown={this.handleMouseDown}
+              onMouseUp={this.handleMouseUp}
+            />
           </div>
         </section>
 
         <section className="player-info row">
-        <div id="stats" className="small-6 columns">
-          <div>
-            <span id="timeElapsed"></span> / <span id="totalTime"></span>
+          <div id="stats" className="small-6 columns">
+            <div>
+              <span id="timeElapsed" /> / <span id="totalTime" />
+            </div>
+            <div id="percentageComplete" />
           </div>
-          <div id="percentageComplete"></div>
-        </div>
-        <div className="player-buttons small-6 columns">
-          <button className="button" onClick={this.handleExtreme}>{this.state.extreme ? 'Extreme Stop' : 'Extreme Start'}</button>
-        </div>
+          <div className="player-buttons small-6 columns">
+            <button
+              className="button"
+              onClick={this.handleExtreme}
+            >{this.state.extreme ? 'Extreme Stop' : 'Extreme Start'}</button>
+          </div>
         </section>
       </div>
     );
   }
-
 }
+
+PlayerWindow.propTypes = {
+  videos: React.PropTypes.array,
+  channel_id: React.PropTypes.any,
+};
