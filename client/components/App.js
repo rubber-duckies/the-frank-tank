@@ -12,6 +12,7 @@ export default class App extends React.Component {
       videos: [],
       channel: '',
       channel_id: 'default',
+      id: 0,
     };
   }
 
@@ -27,15 +28,15 @@ export default class App extends React.Component {
     });
   }
 
-  // now defunct?
-  setChannel(channelObj) {
-    this.setState({
-      background: channelObj.background,
-      videos: channelObj.videos,
-      channel: channelObj.name,
-    });
-    $('body').css('background-image', `url(${this.state.background})`);
-  }
+  // // now defunct?
+  // setChannel(channelObj) {
+  //   this.setState({
+  //     background: channelObj.background,
+  //     videos: channelObj.videos,
+  //     channel: channelObj.name,
+  //   });
+  //   $('body').css('background-image', `url(${this.state.background})`);
+  // }
 
   changeChannel(channelId) {
     NavModel.changeChannel(channelId)
@@ -64,8 +65,8 @@ export default class App extends React.Component {
 
         <div className="container">
           <div className="row column">
-            <h2>{this.state.name}</h2>
-            <PlayerWindow videos={this.state.videos} channel_id={this.state.background} id={this.state.id} />
+            <h2>{this.state.channel}</h2>
+            <PlayerWindow videos={this.state.videos} channel_id={this.state.channel_id} />
           </div>
         </div>
       </div>

@@ -13,6 +13,10 @@ export default class PlayerWindow extends React.Component {
       totalTime: 0,
       offset: 0,
       momentList: [],
+      extreme: false,
+      extremeStart: null,
+      extremeStop: null,
+      channel_id: 0,
     };
 
     // references to dom elements
@@ -28,16 +32,14 @@ export default class PlayerWindow extends React.Component {
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleExtreme = this.handleExtreme.bind(this);
   }
 
   componentWillMount() {
-    this.setState({
-      id: this.props.id,
-    });
   }
 
   componentDidMount() {
-    //console.log('component mounted');
+    console.log('component mounted');
 
     this.playHead = document.getElementById('playHead');
     this.timeline = document.getElementById('timeline');
@@ -45,17 +47,14 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidUpdate() {
-    //console.log('component updating');
+    console.log('component updating');
 
-    // if (this.props.videos.length && this.state.id !== this.props.id) {
-    //   this.updateVideoList(this.props.videos);
-    // }
-
-    if(this.props.videos[0].channel_id !== this.state.currentVideo.channel_id) {
+    if (this.props.channel_id !== this.state.channel_id) {
       this.updateVideoList(this.props.videos);
+
+      console.log('this.props.videos', this.props.videos);
     }
 
-    console.log(this.props.videos);
   }
 
   updateVideoList(list) {
@@ -64,6 +63,7 @@ export default class PlayerWindow extends React.Component {
     this.setState({
       currentVideo: updatedList.shift(),
       videoList: updatedList,
+      channel_id: this.props.channel_id,
     });
   }
 
@@ -73,7 +73,6 @@ export default class PlayerWindow extends React.Component {
     });
 
     this.updateVideoList();
-    //this.handleReadyState(event);
   }
 
   handleReadyState(event) {
@@ -104,6 +103,28 @@ export default class PlayerWindow extends React.Component {
         });
       });
     }
+  }
+
+  handleExtreme(e) {
+    if (!this.state.extreme) { 
+      this.setState({ extreme: true });
+      e.target.classList.add('alert');
+
+      if (!this.state.extremeStart) {
+        this.setState({
+          extremeStart: this.player.getCurrentTime(),
+        });
+      }
+    } else {
+      this.setState({ 
+        extreme: false,
+        extremeStop: this.player.getCurrentTime(),
+      });
+      e.target.classList.remove('alert');
+    }
+
+    console.log(this.state.extreme);
+
   }
 
   handleStateChange(event) {
@@ -165,8 +186,6 @@ export default class PlayerWindow extends React.Component {
     this.setState({
       seek: true,
     });
-
-    console.log(this.state.seek);
   }
 
   handleMouseUp() {
@@ -176,10 +195,6 @@ export default class PlayerWindow extends React.Component {
 
     const seekTime = this.state.totalTime * this.state.offset;
     this.player.seekTo(seekTime, true);
-
-    console.log(this.hello);
-
-    console.log(this.state.seek);
   }
 
   renderVideo() {
@@ -225,12 +240,18 @@ export default class PlayerWindow extends React.Component {
             <div className="playHead" id="playHead" onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp} />
           </div>
         </section>
-        <div id="stats">
+
+        <section className="player-info row">
+        <div id="stats" className="small-6 columns">
           <div>
             <span id="timeElapsed"></span> / <span id="totalTime"></span>
           </div>
           <div id="percentageComplete"></div>
         </div>
+        <div className="player-buttons small-6 columns">
+          <button className="button" onClick={this.handleExtreme}>{this.state.extreme ? 'Extreme Stop' : 'Extreme Start'}</button>
+        </div>
+        </section>
       </div>
     );
   }
