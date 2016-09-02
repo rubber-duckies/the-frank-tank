@@ -15,8 +15,15 @@ h1, h2 {
   font-family: Bangers;
   color: #fff;
   position: relative;
-  z-index: 999;
+  z-index: 100;
   text-shadow: 2px 2px 0px #000;
+}
+
+.menu {
+  /*position: relative;*/
+  z-index: 200;
+  font-family: Bangers;
+  font-size: 22px;
 }
 
 .container {

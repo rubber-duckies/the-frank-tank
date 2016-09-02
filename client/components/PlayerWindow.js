@@ -31,6 +31,9 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentWillMount() {
+    this.setState({
+      id: this.props.id,
+    });
   }
 
   componentDidMount() {
@@ -43,7 +46,7 @@ export default class PlayerWindow extends React.Component {
 
   componentDidUpdate() {
     console.log('component updating');
-    if (this.props.videos.length && !this.state.currentVideo) {
+    if (this.props.videos.length && this.state.id !== this.props.id) {
       this.updateVideoList(this.props.videos);
     }
     if(this.props.videos[0].channel_id !== this.state.currentVideo.channel_id) {
