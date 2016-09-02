@@ -26,6 +26,8 @@ const google = require('googleapis');
 const _ = require('underscore');
 
 const db = require('./db');
+
+// Duplicate the 'keys_copyMe.js' file, rename it 'keys.js', and paste in your Google API key
 const keys = require('./keys');
 
 const auth = keys.CLIENT_ID;
@@ -355,7 +357,7 @@ app.get('/db_init', (req, res) => {
   ***********************************************************************
 */
 
-app.post('/videos/:id', (req, res) => {
+app.get('/videos/:id', (req, res) => {
   const randomCriteria = _.shuffle(searchCriteria[req.params.id]);
   const q = `extreme ${randomCriteria[0]} | ${randomCriteria[1]}) -fail -funny`;
   const params = {
@@ -375,7 +377,10 @@ app.post('/videos/:id', (req, res) => {
       console.log('Encountered error', err);
     } else {
       console.log('search: ', resp);
-      res.status(200).send(resp);
+      db.addVideo(resp.items[0].id.videoId, req.params.id)
+      .then((videoObj) => {
+        res.status(200).send(videoObj);
+      });
     }
   });
 });
