@@ -37,7 +37,7 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidMount() {
-    console.log('component mounted');
+    //console.log('component mounted');
 
     this.playHead = document.getElementById('playHead');
     this.timeline = document.getElementById('timeline');
@@ -45,13 +45,17 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('component updating');
-    if (this.props.videos.length && this.state.id !== this.props.id) {
-      this.updateVideoList(this.props.videos);
-    }
+    //console.log('component updating');
+
+    // if (this.props.videos.length && this.state.id !== this.props.id) {
+    //   this.updateVideoList(this.props.videos);
+    // }
+
     if(this.props.videos[0].channel_id !== this.state.currentVideo.channel_id) {
       this.updateVideoList(this.props.videos);
     }
+
+    console.log(this.props.videos);
   }
 
   updateVideoList(list) {
@@ -105,7 +109,8 @@ export default class PlayerWindow extends React.Component {
   handleStateChange(event) {
     //onStateChange(event);
 
-    console.log('playerState', event.target.getPlayerState());
+    //console.log('playerState', event.target.getPlayerState());
+
     this.setState({
       totalTime: event.target.getDuration(),
     });
