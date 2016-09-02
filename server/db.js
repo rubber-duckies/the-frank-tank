@@ -211,13 +211,34 @@ knex.getChannelById = (channelId) => {
 
 /*
   ***********************************************************************
+
   What do I do?
+
   ***********************************************************************
 */
 
-knex.addVideos = (videoUrl, channelId) =>
-  knex('videos').insert({ url: videoUrl, channel_id: channelId });
+knex.addVideo = (videoUrl, channelId) => {
+  const videoObj = {
+    url: videoUrl,
+    channel_id: channelId,
+  };
 
+  return knex('videos').where(videoObj)
+  .then(videos => {
+    if (videos.length) {
+      throw videos[0];
+    } else {
+      return videoObj;
+    }
+  })
+  .then(video => knex('videos').insert(video))
+  .then(() => knex.select('id').from('videos').where(videoObj))
+  .then(id => {
+    videoObj.id = id[0].id;
+    return videoObj;
+  })
+  .catch(video => video);
+};
 
 /*
   ***********************************************************************
