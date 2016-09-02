@@ -114,6 +114,14 @@ h1, h2 {
     left: calc(50% - 10px);
   }
 
-  #stats {
-    color: #fff;
-  }
+.player-info {
+  margin-top: 20px;
+}
+
+#stats {
+  color: #fff;
+}
+
+.player-buttons {
+  text-align: right;
+}
