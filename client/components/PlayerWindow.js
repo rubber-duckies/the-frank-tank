@@ -14,8 +14,8 @@ export default class PlayerWindow extends React.Component {
       offset: 0,
       momentList: [],
       extreme: false,
-      extremeStart: null,
-      extremeStop: null,
+      extremeStart: 0,
+      extremeStop: 0,
       channel_id: 0,
     };
 
@@ -24,6 +24,7 @@ export default class PlayerWindow extends React.Component {
     this.controls = '';
     this.playHead = '';
     this.timeline = '';
+    this.extremeClip = '';
 
     // you have to manually bind methods
     this.handleEnd = this.handleEnd.bind(this);
@@ -97,7 +98,6 @@ export default class PlayerWindow extends React.Component {
         this.state.momentList.push(newMoment);
         newMoment.render.addClass('moment');
         newMoment.render.css({
-          position: 'absolute',
           left: `${mLeft * 100}%`,
           width: `${mWidth * 100}%`,
         });
@@ -114,6 +114,9 @@ export default class PlayerWindow extends React.Component {
         this.setState({
           extremeStart: this.player.getCurrentTime(),
         });
+
+        this.extremeClip = $('<div/>').addClass('moment').addClass('extreme');
+        $('#moments').append(this.extremeClip);
       }
     } else {
       this.setState({ 
@@ -128,9 +131,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   handleStateChange(event) {
-    //onStateChange(event);
-
-    //console.log('playerState', event.target.getPlayerState());
 
     this.setState({
       totalTime: event.target.getDuration(),
@@ -147,6 +147,16 @@ export default class PlayerWindow extends React.Component {
         this.state.momentList.forEach(moment => {
           moment.hitTest(event.target.getCurrentTime());
         });
+
+        if (this.extremeClip) {
+          const clipEnd = this.state.extremeStop || this.player.getCurrentTime();
+          const clipWidth = (clipEnd - this.state.extremeStart) / this.state.totalTime;
+          const clipLeft = this.state.extremeStart / this.state.totalTime;
+          this.extremeClip.css({
+            left: `${clipLeft * 100}%`,
+            width: `${clipWidth * 100}%`,
+          });
+        }
 
         if (!this.state.seek) {
           this.playHead.style.left = `${percent}%`;
