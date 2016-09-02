@@ -13,8 +13,6 @@ export default class NavBar extends React.Component {
   }
 
   handleChange(value) {
-    console.log('current target', value);
-    console.log('changeChannel', this.props.changeChannel);
     this.props.changeChannel(value);
   }
 

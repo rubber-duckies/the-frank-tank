@@ -2,6 +2,7 @@ import React from 'react';
 import PlayerWindow from './PlayerWindow';
 import NavBar from './NavBar';
 import NavModel from '../models/navModel';
+import $ from '../models/lib/jquery';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -27,16 +28,6 @@ export default class App extends React.Component {
       $('body').css('background-image', `url(${this.state.background})`);
     });
   }
-
-  // // now defunct?
-  // setChannel(channelObj) {
-  //   this.setState({
-  //     background: channelObj.background,
-  //     videos: channelObj.videos,
-  //     channel: channelObj.name,
-  //   });
-  //   $('body').css('background-image', `url(${this.state.background})`);
-  // }
 
   changeChannel(channelId) {
     NavModel.changeChannel(channelId)
