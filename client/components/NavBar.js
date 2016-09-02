@@ -7,14 +7,21 @@ export default class NavBar extends React.Component {
     this.state = {
       user: 'RubberDucky',
     };
+
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
     $('.dropdown').foundation();
   }
 
+  handleClick(e) {
+    this.props.updateChannel(e.target.id);
+    // console.log(e.target.id);
+  }
+
   render() {
-    return (
+    return ( 
       <ul className="dropdown menu" data-dropdown-menu>
         <li><a href="/">Home</a></li>
         <li className="is-dropdown-submenu-parent">

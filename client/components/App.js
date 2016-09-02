@@ -9,15 +9,11 @@ export default class App extends React.Component {
       user: 'Frank',
       background: '',
       videos: [],
-      channel: '',
+      name: 'default',
+      id: 'default',
     };
-  }
 
-  changeChannel(channel_id) {
-    this.setState({
-      videos: [],
-    })
-    this.setChannel(channel_id)
+    this.handleChannelUpdate = this.handleChannelUpdate.bind(this);
   }
 
   componentDidMount() {
@@ -36,13 +32,31 @@ export default class App extends React.Component {
         user_id: 1,
       }),
     }).then(data => {
+      //console.log(data.videos);
       this.setState({ 
         background: data.background,
         videos: data.videos,
-        channel: data.name,
+        name: data.name,
+        id: data.id,
       });
       $('body').css('background-image', `url(${this.state.background})`);
     });
+  }
+
+  changeChannel(channel_id) {
+    this.setState({
+      videos: [],
+    });
+
+    this.setChannel(channel_id);
+  }
+
+  handleChannelUpdate(id) {
+    // console.log('channel', id);
+    // this.setState({
+    //   id: id,
+    // });
+    this.getChannel(id);
   }
 
   render() {
@@ -59,8 +73,8 @@ export default class App extends React.Component {
 
         <div className="container">
           <div className="row column">
-            <h2>{this.state.channel}</h2>
-            <PlayerWindow videos={this.state.videos} />
+            <h2>{this.state.name}</h2>
+            <PlayerWindow videos={this.state.videos} channel_id={this.state.background} id={this.state.id} />
           </div>
         </div>
       </div>
