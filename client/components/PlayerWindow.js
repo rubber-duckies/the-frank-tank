@@ -151,9 +151,9 @@ export default class PlayerWindow extends React.Component {
     if (event.target.getPlayerState() === 1) {
       window.setInterval(() => {
         const percent = (event.target.getCurrentTime() / this.state.totalTime) * 100;
-        const totalMinutes = (`0${Math.floor(this.state.totalTime / 60)}`).slice(-2);
+        const totalMinutes = (`${Math.floor(this.state.totalTime / 60)}`);
         const totalSeconds = (`0${Math.floor(this.state.totalTime % 60)}`).slice(-2);
-        const currentMinutes = (`0${Math.floor(event.target.getCurrentTime() / 60)}`).slice(-2);
+        const currentMinutes = (`${Math.floor(event.target.getCurrentTime() / 60)}`);
         const currentSeconds = (`0${Math.floor(event.target.getCurrentTime() % 60)}`).slice(-2);
 
         $('#timeElapsed').html(`${currentMinutes}:${currentSeconds}`);
