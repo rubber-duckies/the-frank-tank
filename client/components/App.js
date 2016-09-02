@@ -22,7 +22,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.setChannel(1);
+    this.setChannel('default');
   }
 
   setChannel(channelId){
