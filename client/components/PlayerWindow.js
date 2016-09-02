@@ -46,6 +46,9 @@ export default class PlayerWindow extends React.Component {
     if (this.props.videos.length && !this.state.currentVideo) {
       this.updateVideoList(this.props.videos);
     }
+    if(this.props.videos[0].channel_id !== this.state.currentVideo.channel_id) {
+      this.updateVideoList(this.props.videos);
+    }
   }
 
   updateVideoList(list) {

@@ -20,12 +20,12 @@ export default class NavBar extends React.Component {
         <li className="is-dropdown-submenu-parent">
           <a>Channels</a>
           <ul className="menu">
-            <li><a href="/channel/3">Sea</a></li>
-            <li><a href="/channel/2">Air</a></li>
-            <li><a href="/channel/1">Land</a></li>
+            <li><a onClick={this.props.changeChannel.bind(this.props.that, 2)}>Sea</a></li>
+            <li><a onClick={this.props.changeChannel.bind(this.props.that, 3)}>Air</a></li>
+            <li><a onClick={this.props.changeChannel.bind(this.props.that, 1)}>Land</a></li>
           </ul>
         </li>
-        <li><a href="/">Logout</a></li>
+        <li><a href='/'>Logout</a></li>
       </ul>
     );
   }

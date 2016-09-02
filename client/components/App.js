@@ -13,15 +13,26 @@ export default class App extends React.Component {
     };
   }
 
+  changeChannel(channel_id) {
+    this.setState({
+      videos: [],
+    })
+    this.setChannel(channel_id)
+  }
+
   componentDidMount() {
+    this.setChannel('default');
+  }
+
+  setChannel(channelId){
     $.ajax({
-      url: 'http://localhost:8000/channel/1',
+      url: 'http://localhost:8000/channel/' + channelId,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
       data: JSON.stringify({
-        channel_id: 1,
+        channel_id: {channelId},
         user_id: 1,
       }),
     }).then(data => {
@@ -41,7 +52,7 @@ export default class App extends React.Component {
           <div className="container">
             <div className="row column">
               <h1>The Frank Tank</h1>
-              <NavBar />
+              <NavBar changeChannel={this.changeChannel} that={this}/>
             </div>
           </div>
         </header>
