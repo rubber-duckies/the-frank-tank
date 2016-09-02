@@ -22,10 +22,14 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const babelify = require('babelify');
 const browserify = require('browserify-middleware');
-const db = require('./db');
 const google = require('googleapis');
+const _ = require('underscore');
 
-const auth = 'AIzaSyDshEQnA__mSxXLnmrJTG-ZsEGeJ0J32BA';
+const db = require('./db');
+const keys = require('./keys');
+
+const auth = keys.CLIENT_ID;
+
 const youtube = google.youtube({ version: 'v3', auth });
 
 const app = express();
@@ -114,6 +118,28 @@ const dummyObj = {
   }],
 };
 */
+
+const searchCriteria = {
+  1: [
+    'mountain biking',
+    'skateboarding',
+    'motorcross',
+    'stunt biking',
+    'snowboarding',
+    'snow skiing',
+  ],
+  2: [
+    'surfing',
+    'jet ski',
+    'wakeboarding',
+  ],
+  3: [
+    'skydiving',
+    'base jumping',
+    'bungee jumping',
+    'wingsuit',
+  ],
+};
 
 /*
   ****************
@@ -329,8 +355,9 @@ app.get('/db_init', (req, res) => {
   ***********************************************************************
 */
 
-app.get('/videos', (req, res) => {
-  let q = 'extreme basejumping -fail -funny';
+app.post('/videos/:id', (req, res) => {
+  const randomCriteria = _.shuffle(searchCriteria[req.params.id]);
+  const q = `extreme ${randomCriteria[0]} | ${randomCriteria[1]}) -fail -funny`;
   const params = {
     q,
     order: 'viewCount',
@@ -345,7 +372,7 @@ app.get('/videos', (req, res) => {
 
   youtube.search.list(params, (err, resp) => {
     if (err) {
-    console.log('Encountered error', err);
+      console.log('Encountered error', err);
     } else {
       console.log('search: ', resp);
       res.status(200).send(resp);
