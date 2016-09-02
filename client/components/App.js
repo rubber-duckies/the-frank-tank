@@ -14,7 +14,6 @@ export default class App extends React.Component {
   }
 
   changeChannel(channel_id) {
-    console.log(channel_id)
     this.setState({
       videos: [],
     })
