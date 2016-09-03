@@ -1,6 +1,6 @@
 import $ from './lib/jquery';
 
-export const Moment = (element, moment) => {
+export const Moment = (element, moment, player) => {
   const momentObj = moment;
 
   const likeWindow = $('<div>').addClass('likeWindow').html(`
@@ -10,8 +10,14 @@ export const Moment = (element, moment) => {
 
   element.append(likeWindow);
 
+  likeWindow.click((e) => {
+    console.log('likeWindow clicked');
+    e.stopPropagation();
+  });
+
   element.click(() => {
     console.log('Like Count', momentObj.users);
+    player.seekTo(momentObj.start_time);
   });
 
   function hitTest(time) {

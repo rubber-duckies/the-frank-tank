@@ -91,7 +91,7 @@ export default class PlayerWindow extends React.Component {
       $('#moments').html('');
 
       this.state.currentVideo.time_based_likes.forEach(moment => {
-        const newMoment = new Moment($('<div>').html(''), moment);
+        const newMoment = new Moment($('<div>').html(''), moment, this.player);
         const mWidth = (moment.stop_time - moment.start_time) / this.state.totalTime;
         const mLeft = moment.start_time / this.state.totalTime;
         $('#moments').append(newMoment.render);
