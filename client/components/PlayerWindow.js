@@ -53,18 +53,39 @@ export default class PlayerWindow extends React.Component {
 
     if (this.props.channel_id !== this.state.channel_id) {
       this.updateVideoList(this.props.videos);
-
-      console.log('this.props.videos', this.props.videos);
     }
+  }
+
+  checkVideoListLength(list) {
+    return new Promise((resolve, reject) => {
+      if (list.length < 3) {
+        getMoreVideos(this.props.channel_id)
+        .then(videos => {
+          const videosArray = list.concat(videos);
+          resolve(videosArray);
+        });
+      } else {
+        reject(list);
+      }
+    });
   }
 
   updateVideoList(list) {
     const updatedList = list || this.state.videoList;
-
-    this.setState({
-      currentVideo: updatedList.shift(),
-      videoList: updatedList,
-      channel_id: this.props.channel_id,
+    this.checkVideoListLength(updatedList)
+    .then(videos => {
+      this.setState({
+        currentVideo: videos.shift(),
+        videoList: videos,
+        channel_id: this.props.channel_id,
+      });
+    })
+    .catch(() => {
+      this.setState({
+        currentVideo: updatedList.shift(),
+        videoList: updatedList,
+        channel_id: this.props.channel_id,
+      });
     });
   }
 
@@ -80,7 +101,7 @@ export default class PlayerWindow extends React.Component {
     this.player = event.target;
 
     if (this.state.currentVideo) {
-      //onReady(this.state.currentVideo, event);
+      // onReady(this.state.currentVideo, event);
 
       event.target.playVideo();
       event.target.mute();
@@ -143,7 +164,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   handleStateChange(event) {
-
     this.setState({
       totalTime: event.target.getDuration(),
     });
