@@ -373,32 +373,36 @@ app.get('/db_init', (req, res) => {
 */
 
 app.get('/videos/:id', (req, res) => {
-  const randomCriteria = _.shuffle(searchCriteria[req.params.id]);
-  const q = `extreme ${randomCriteria[0]} | ${randomCriteria[1]}) -fail -funny`;
-  const params = {
-    q,
-    order: 'viewCount',
-    type: 'video',
-    videoDefinition: 'high',
-    videoDuration: 'medium',
-    fields: 'items/id',
-    videoDimension: '2d',
-    videoEmbeddable: 'true',
-    part: 'snippet',
-  };
+  if (req.params.id === '1' || req.params.id === '2' || req.params.id === '3') {
+    const randomCriteria = _.shuffle(searchCriteria[req.params.id]);
+    const query = `extreme ${randomCriteria[0]} | ${randomCriteria[1]}) -fail -funny`;
+    const params = {
+      q: query,
+      order: 'viewCount',
+      type: 'video',
+      videoDefinition: 'high',
+      videoDuration: 'medium',
+      fields: 'items/id',
+      videoDimension: '2d',
+      videoEmbeddable: 'true',
+      part: 'snippet',
+    };
 
-  youtube.search.list(params, (err, resp) => {
-    if (err) {
-      res.status(404).send('Search failed.  Youtube\'s fault');
-    } else if (resp.items.length) {
-      db.addVideos(resp.items, req.params.id)
-      .then((videos) => {
-        res.status(200).send(videos);
-      });
-    } else {
-      res.status(404).send('Search failed to return any items');
-    }
-  });
+    youtube.search.list(params, (err, resp) => {
+      if (err) {
+        res.status(404).send('Search failed.  Youtube\'s fault');
+      } else if (resp.items.length) {
+        db.addVideos(resp.items, req.params.id)
+        .then((videos) => {
+          res.status(200).send(videos);
+        });
+      } else {
+        res.status(404).send('Search failed to return any items');
+      }
+    });
+  } else {
+    res.status(400).send('Cannot add videos to that channel!');
+  }
 });
 
 /*
