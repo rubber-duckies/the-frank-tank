@@ -20,7 +20,7 @@ export const Moment = (element, moment, player) => {
     player.seekTo(momentObj.start_time);
   });
 
-  function hitTest(time) {
+  function hitLikeTest(time) {
     if (time > momentObj.start_time && time < momentObj.stop_time) {
       //console.log('hit', momentObj.id);
       likeWindow.addClass('active');
@@ -33,7 +33,7 @@ export const Moment = (element, moment, player) => {
 
   return {
     render: element,
-    hitTest: hitTest,
+    hitTest: hitLikeTest,
   };
 };
 
@@ -41,10 +41,19 @@ export const sendLike = (newLike) => {
   return $.ajax({
     url: 'http://localhost:8000/likes/create',
     method: 'POST',
-    dataType: 'application/json',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // dataType: 'application/json',
     data: JSON.stringify(newLike),
+  });
+};
+
+export const getMoreVideos = (channelId) =>
+  $.ajax({
+    url: `http://localhost:8000/videos/${channelId}`,
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
-};

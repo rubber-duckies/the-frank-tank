@@ -375,7 +375,7 @@ app.get('/db_init', (req, res) => {
 app.get('/videos/:id', (req, res) => {
   if (req.params.id === '1' || req.params.id === '2' || req.params.id === '3') {
     const randomCriteria = _.shuffle(searchCriteria[req.params.id]);
-    const query = `extreme ${randomCriteria[0]} | ${randomCriteria[1]}) -fail -funny`;
+    const query = `extreme ${randomCriteria[0]} | ${randomCriteria[1]}) -fail -funny -3D`;
     const params = {
       q: query,
       order: 'viewCount',
