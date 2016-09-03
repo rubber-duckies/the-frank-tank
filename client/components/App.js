@@ -47,9 +47,11 @@ export default class App extends React.Component {
       <div>
         <header>
           <div className="container">
-            <div className="row column">
-              <h1>The Frank Tank</h1>
-              <NavBar changeChannel={(channelId) => this.changeChannel(channelId)} />
+            <div className="row">
+              <h1 className="medium-6 columns">The Frank Tank</h1>
+              <div className="medium-6 columns">
+                <NavBar changeChannel={(channelId) => this.changeChannel(channelId)} />
+              </div>
             </div>
           </div>
         </header>
