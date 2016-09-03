@@ -217,27 +217,33 @@ knex.getChannelById = (channelId) => {
   ***********************************************************************
 */
 
-knex.addVideo = (videoUrl, channelId) => {
-  const videoObj = {
-    url: videoUrl,
-    channel_id: channelId,
-  };
+knex.addVideos = (videosArray, channelId) => {
+  let successMessage = '';
+  let videos = [];
 
-  return knex('videos').where(videoObj)
-  .then(videos => {
-    if (videos.length) {
-      throw videos[0];
+  return Promise.all(
+    videosArray.map(video => knex('videos').where('url', video.id.videoId))
+  )
+  .then(videosInDB => {
+    videos = videosArray
+      .filter((video, index) => !videosInDB[index].length)
+      .map(video => ({ url: video.id.videoId, channel_id: channelId }));
+    if (!videos.length) {
+      const errMessage = 'No videos added! Refine search parameters';
+      throw errMessage;
     } else {
-      return videoObj;
+      successMessage = (`${videos.length} ${videos.length === 1 ? 'video' : 'videos'} added!`);
+      return Promise.all(
+        videos.map(video => knex('videos').insert(video))
+      );
     }
   })
-  .then(video => knex('videos').insert(video))
-  .then(() => knex.select('id').from('videos').where(videoObj))
-  .then(id => {
-    videoObj.id = id[0].id;
-    return videoObj;
+  .then(() => {
+    console.log(successMessage);
+    return Promise.all(videos.map(video => knex('videos').where('url', video.url)));
   })
-  .catch(video => video);
+  .then(array => array.map(element => element[0]))
+  .catch(error => error);
 };
 
 /*

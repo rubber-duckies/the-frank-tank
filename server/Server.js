@@ -343,7 +343,6 @@ app.post('/likes/update', (req, res) => {
 app.get('/db_init', (req, res) => {
   db.runInitDB()
   .then(message => {
-    console.log(message);
     res.send(message);
   })
   .catch(err => {
@@ -353,7 +352,23 @@ app.get('/db_init', (req, res) => {
 
 /*
   ***********************************************************************
-  Calls the Youtube search API, and returns array of video ids
+  Responds to requests to add more videos to a channel.
+
+  Utilizes the YouTube search api to obtain videos based upon a union of
+  2 keywords from the searchCriteria object for the specified channel.
+
+  Results are passed to the database where they are validated against the
+  videos currently attached to the specified channel and added if not
+  already present.
+
+  GET:
+    Response Object: array of new videos added to the channel:
+    {
+      id: new video id,
+      url: new video YouTube id,
+      channel_id: current channel id,
+      time_based_likes: array of user likes
+    }
   ***********************************************************************
 */
 
@@ -374,16 +389,18 @@ app.get('/videos/:id', (req, res) => {
 
   youtube.search.list(params, (err, resp) => {
     if (err) {
-      console.log('Encountered error', err);
-    } else {
-      console.log('search: ', resp);
-      db.addVideo(resp.items[0].id.videoId, req.params.id)
-      .then((videoObj) => {
-        res.status(200).send(videoObj);
+      res.status(404).send('Search failed.  Youtube\'s fault');
+    } else if (resp.items.length) {
+      db.addVideos(resp.items, req.params.id)
+      .then((videos) => {
+        res.status(200).send(videos);
       });
+    } else {
+      res.status(404).send('Search failed to return any items');
     }
   });
 });
+
 /*
   *******************************************************************
   Spin up server on either NODE environmental variable or 8000(local)
