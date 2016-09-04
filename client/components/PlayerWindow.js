@@ -35,6 +35,7 @@ export default class PlayerWindow extends React.Component {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleExtreme = this.handleExtreme.bind(this);
+    this.handleLame = this.handleLame.bind(this);
   }
 
   componentWillMount() {
@@ -163,6 +164,10 @@ export default class PlayerWindow extends React.Component {
     }
 
     console.log(this.state.extreme);
+  }
+
+  handleLame() {
+    this.player.seekTo(this.player.getDuration());
   }
 
   handleStateChange(event) {
@@ -309,7 +314,7 @@ export default class PlayerWindow extends React.Component {
               <i className="fa fa-thumbs-up" />
               {this.state.extreme ? 'Extreme Stop' : 'Extreme Start'}
             </button>
-            <button className="button alert">
+            <button className="button alert" onClick={this.handleLame}>
               <i className="fa fa-thumbs-down" />
               Lame
             </button>
