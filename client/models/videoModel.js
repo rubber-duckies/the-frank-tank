@@ -4,15 +4,13 @@ export const Moment = (element, moment, player, userId) => {
   const momentObj = moment;
 
   const likeWindow = $('<div>').addClass('likeWindow').html(`
-    <span class="likeCount">${momentObj.users.length}</span>
     <i class="fa fa-thumbs-up"></i>
+    <span class="likeCount">${momentObj.users.length}</span>
   `);
 
   element.append(likeWindow);
 
   likeWindow.click((e) => {
-    console.log('likeWindow clicked');
-    //console.log('like object', momentObj);
     $.ajax({
       url: 'http://localhost:8000/likes/update',
       method: 'POST',
@@ -24,22 +22,19 @@ export const Moment = (element, moment, player, userId) => {
         likes_id: momentObj.id,
       }),
     })
-    .done(function(data) {
+    .done((data) => {
       likeWindow.children('.likeCount').html(data.users.length);
-      // console.log('like return data', data);
       console.log('like count updated');
     });
     e.stopPropagation();
   });
 
   element.click(() => {
-    // console.log('Like Count', momentObj.users);
     player.seekTo(momentObj.start_time);
   });
 
   function hitLikeTest(time) {
     if (time > momentObj.start_time && time < momentObj.stop_time) {
-      //console.log('hit', momentObj.id);
       likeWindow.addClass('active');
       return true;
     } else {
