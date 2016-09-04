@@ -3,6 +3,7 @@ body {
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
+  font-family: 'Fjalla One';
 }
 
 header {
@@ -60,10 +61,19 @@ h1, h2 {
   height: 50px;
   width: 10px;
   margin-left: -5px;
-  background: red;
   cursor: pointer;
   left: 0%;
   top: -22px;
+  background-color: hsl(12,98%,49%);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2.5' height='14.6' viewBox='0 0 2.5 14.6'><style>.st0{opacity:0.15;}</style><path class='st0' d='M0 12.1h2.5v2.5H0zM0 6.1h2.5v2.5H0zM0 0h2.5v2.5H0z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-right: 1px solid rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+#playHead:hover {
+  background-color: hsl(12,98%,40%);
 }
 
 .timeline {
@@ -86,18 +96,36 @@ h1, h2 {
 .likeWindow {
   position: absolute;
   top: calc(100% + 10px);
-  left: calc(-60px + 50%);
+  left: calc(-50px + 50%);
   background: white;
-  padding: 20px;
-  width: 120px;
+  padding: 10px 20px;
+  width: 100px;
+  box-sizing: border-box;
   display: none;
   font-size: 24px;
-  font-family: Bangers;
+  font-family: 'Fjalla One';
   text-align: center;
+  opacity: 0;
+  transition: all .3s;
+  color: #0a0a0a;
+}
+
+.likeWindow:hover {
+  background: #1583cc;
+  color: white;
+  box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
+}
+
+.likeWindow:hover:before {
+  border-color: transparent transparent #1583cc transparent;
 }
 
 .likeWindow.active {
+  opacity: 1;
   display: block;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-name: bounceInDown;
 }
 
 .likeWindow:before {
@@ -112,6 +140,7 @@ h1, h2 {
     position: absolute;
     top: -20px;
     left: calc(50% - 10px);
+    transition: all .3s;
   }
 
 .player-info {
@@ -120,8 +149,46 @@ h1, h2 {
 
 #stats {
   color: #fff;
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
 }
 
 .player-buttons {
   text-align: right;
+}
+
+.player-buttons .button {
+  margin-left: 10px;
+}
+
+.player-buttons .button i {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+@keyframes bounceInDown {
+  from, 60%, 75%, 90%, to {
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  }
+
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -30px, 0);
+  }
+
+  40% {
+    opacity: 1;
+    transform: translate3d(0, 15px, 0);
+  }
+
+  55% {
+    transform: translate3d(0, -10px, 0);
+  }
+
+  70% {
+    transform: translate3d(0, 5px, 0);
+  }
+
+  to {
+    transform: none;
+  }
 }

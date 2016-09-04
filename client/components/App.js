@@ -59,7 +59,7 @@ export default class App extends React.Component {
         <div className="container">
           <div className="row column">
             <h2>{this.state.channel}</h2>
-            <PlayerWindow videos={this.state.videos} channel_id={this.state.channel_id} />
+            <PlayerWindow videos={this.state.videos} channel_id={this.state.channel_id} user_id="1" />
           </div>
         </div>
       </div>

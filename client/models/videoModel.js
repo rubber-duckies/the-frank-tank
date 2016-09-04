@@ -1,28 +1,40 @@
 import $ from './lib/jquery';
 
-export const Moment = (element, moment, player) => {
+export const Moment = (element, moment, player, userId) => {
   const momentObj = moment;
 
   const likeWindow = $('<div>').addClass('likeWindow').html(`
-    ${momentObj.users.length}
     <i class="fa fa-thumbs-up"></i>
+    <span class="likeCount">${momentObj.users.length}</span>
   `);
 
   element.append(likeWindow);
 
   likeWindow.click((e) => {
-    console.log('likeWindow clicked');
+    $.ajax({
+      url: 'http://localhost:8000/likes/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify({
+        user_id: userId,
+        likes_id: momentObj.id,
+      }),
+    })
+    .done((data) => {
+      likeWindow.children('.likeCount').html(data.users.length);
+      console.log('like count updated');
+    });
     e.stopPropagation();
   });
 
   element.click(() => {
-    console.log('Like Count', momentObj.users);
     player.seekTo(momentObj.start_time);
   });
 
   function hitLikeTest(time) {
     if (time > momentObj.start_time && time < momentObj.stop_time) {
-      //console.log('hit', momentObj.id);
       likeWindow.addClass('active');
       return true;
     } else {

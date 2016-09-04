@@ -35,6 +35,7 @@ export default class PlayerWindow extends React.Component {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleExtreme = this.handleExtreme.bind(this);
+    this.handleLame = this.handleLame.bind(this);
   }
 
   componentWillMount() {
@@ -113,7 +114,7 @@ export default class PlayerWindow extends React.Component {
 
       if (this.state.currentVideo.time_based_likes.length) {
         this.state.currentVideo.time_based_likes.forEach(moment => {
-          const newMoment = new Moment($('<div>').html(''), moment, this.player);
+          const newMoment = new Moment($('<div>').html(''), moment, this.player, this.props.user_id);
           const mWidth = (moment.stop_time - moment.start_time) / this.state.totalTime;
           const mLeft = moment.start_time / this.state.totalTime;
           $('#moments').append(newMoment.render);
@@ -153,7 +154,7 @@ export default class PlayerWindow extends React.Component {
 
       newLike.start_time = Math.ceil(this.state.extremeStart - 3);
       newLike.stop_time = Math.ceil(endTime);
-      newLike.user_id = 1;
+      newLike.user_id = this.props.user_id;
       newLike.video_id = this.state.currentVideo.id;
       newLike.channel_id = this.state.currentVideo.channel_id;
       sendLike(newLike)
@@ -163,6 +164,10 @@ export default class PlayerWindow extends React.Component {
     }
 
     console.log(this.state.extreme);
+  }
+
+  handleLame() {
+    this.player.seekTo(this.player.getDuration());
   }
 
   handleStateChange(event) {
@@ -305,7 +310,14 @@ export default class PlayerWindow extends React.Component {
             <button
               className="button"
               onClick={this.handleExtreme}
-            >{this.state.extreme ? 'Extreme Stop' : 'Extreme Start'}</button>
+            >
+              <i className="fa fa-thumbs-up" />
+              {this.state.extreme ? 'Extreme Stop' : 'Extreme Start'}
+            </button>
+            <button className="button alert" onClick={this.handleLame}>
+              <i className="fa fa-thumbs-down" />
+              Lame
+            </button>
           </div>
         </section>
       </div>
