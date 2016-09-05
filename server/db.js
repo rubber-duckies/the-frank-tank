@@ -21,21 +21,32 @@
 
 Using PostgreSQL.  Minimal installation instructions:
 
-# Using Homebrew from terminal:
+# Using Homebrew
 
-  -brew update
-  -brew install postgresql
-  -brew services start postgres
-  -createdb greenfield_vplayer
+    From the working directory in your terminal:
+
+    1. update homewbrew:
+        $ brew update
+
+    2. install PostgreSQL:
+        $ brew install postgresql
+
+    3. start PostgreSQL:
+        $ brew services start postgres
+
+    4. create a new database for this project:
+        $ createdb greenfield_vplayer
 
 # Not using Homebrew:
 
-  -install Homebrew
-  -see above
+    1. install Homebrew:
+        $ npm install homebrew
+
+    2. see above
 
 # Don't want to use Homebrew
 
-  -good luck with that
+    - good luck with that
 
 Some background URLs for the default channel:
   Kill the PacMan    : https://i.imgur.com/fa7mUp8.jpg
@@ -44,12 +55,24 @@ Some background URLs for the default channel:
 
 */
 
+// Node.js uses the require() function to include modules that exist
+// in separate files.  Require() reads the specified Javascript file,
+// executes the file, and then returns the exports object of the file.
+
+// Returns the underscore.js function library:
 const _ = require('underscore');
+
+// Returns the database configuration settings:
 const config = require('../knexfile');
 
+// Sets the current environment to development:
 const env = 'development';
+
+// Knex is a module used for designing database schema
+// and building SQL queries:
 const knex = require('knex')(config[env]);
 
+// Updates the database to the latest configuration:
 knex.migrate.latest([config]);
 
 /*
