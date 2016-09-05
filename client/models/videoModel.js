@@ -1,5 +1,6 @@
 import $ from './lib/jquery';
 
+// moments are highlight clips within a currently playing video
 export const Moment = (element, moment, player, userId) => {
   const momentObj = moment;
 
@@ -49,6 +50,7 @@ export const Moment = (element, moment, player, userId) => {
   };
 };
 
+// update like count for a specific moment
 export const sendLike = (newLike) => {
   return $.ajax({
     url: 'http://localhost:8000/likes/create',
@@ -61,6 +63,7 @@ export const sendLike = (newLike) => {
   });
 };
 
+// get more videos from DB
 export const getMoreVideos = (channelId) =>
   $.ajax({
     url: `http://localhost:8000/videos/${channelId}`,

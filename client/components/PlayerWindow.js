@@ -57,6 +57,7 @@ export default class PlayerWindow extends React.Component {
     }
   }
 
+  // new videos are added if video list reaches a specific length
   checkVideoListLength(list) {
     return new Promise((resolve, reject) => {
       if (list.length < 3) {
@@ -71,6 +72,7 @@ export default class PlayerWindow extends React.Component {
     });
   }
 
+  // remove current video from list and update state
   updateVideoList(list) {
     const updatedList = list || this.state.videoList;
     this.checkVideoListLength(updatedList)
@@ -90,6 +92,7 @@ export default class PlayerWindow extends React.Component {
     });
   }
 
+  // ended state from API
   handleEnd() {
     this.setState({
       momentList: [],
@@ -98,14 +101,26 @@ export default class PlayerWindow extends React.Component {
     this.updateVideoList();
   }
 
+  // ready state from player API
   handleReadyState(event) {
+    console.log('player ready');
     this.player = event.target;
 
     if (this.state.currentVideo) {
-      // onReady(this.state.currentVideo, event);
 
-      event.target.playVideo();
-      event.target.mute();
+      // player state
+      // 1 – unstarted
+      // 0 – ended
+      // 1 – playing
+      // 2 – paused
+      // 3 – buffering
+      // 5 – video cued
+
+      if (this.player.getPlayerState() !== 2 && this.player.getPlayerState() !== 1) {
+        event.target.playVideo();
+        event.target.mute();
+      }
+
       this.setState({
         totalTime: event.target.getDuration(),
       });
@@ -129,6 +144,7 @@ export default class PlayerWindow extends React.Component {
     }
   }
 
+  // create a new highlight in currently playing video
   handleExtreme(e) {
     if (!this.state.extreme) {
       this.setState({ extreme: true });
@@ -166,10 +182,12 @@ export default class PlayerWindow extends React.Component {
     console.log(this.state.extreme);
   }
 
+  // skip to next video
   handleLame() {
     this.player.seekTo(this.player.getDuration());
   }
 
+  // respond to video state from youtube player API
   handleStateChange(event) {
     this.setState({
       totalTime: event.target.getDuration(),
@@ -214,6 +232,7 @@ export default class PlayerWindow extends React.Component {
     this.handleReadyState(event);
   }
 
+  // drag playhead left and right
   handleMouseMove(e) {
     const userOffset = (e.clientX - (this.timeline.offsetLeft + this.controls.offsetLeft));
     this.state.offset = (userOffset) / this.timeline.offsetWidth;
@@ -235,12 +254,14 @@ export default class PlayerWindow extends React.Component {
     }
   }
 
+  // enable playhead drag
   handleMouseDown() {
     this.setState({
       seek: true,
     });
   }
 
+  // disable playhead drag
   handleMouseUp() {
     this.setState({
       seek: false,
@@ -250,6 +271,7 @@ export default class PlayerWindow extends React.Component {
     this.player.seekTo(seekTime, true);
   }
 
+  // render either a spinner or youtube component
   renderVideo() {
     const opts = {
       height: '390',
