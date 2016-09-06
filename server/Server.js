@@ -50,7 +50,7 @@ const serverMessage = `Listening on port: ${serverUrl}`;
 
 /*
 const channels = [
-  { id: 1, name: 'land', background: path.join(__dirname, '../assets/land_background.jpg') },
+  { id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg') },
 ];
 
 const users = [
@@ -68,10 +68,10 @@ const videos = [
 ];
 
 const likes = [
-  { id: 1, start: 43, stop: 48, video_id: 1, users: [1, 2, 4] },
-  { id: 2, start: 74, stop: 82, video_id: 1, users: [2, 3, 4] },
-  { id: 3, start: 38, stop: 42, video_id: 2, users: [1, 3, 4] },
-  { id: 4, start: 70, stop: 90, video_id: 3, users: [2, 5] },
+  { id: 1, start: 43, stop: 48, video_id: 1, channel_id: 1, users: [1, 2, 4] },
+  { id: 2, start: 74, stop: 82, video_id: 1, channel_id: 1, users: [2, 3, 4] },
+  { id: 3, start: 38, stop: 42, video_id: 2, channel_id: 1, users: [1, 3, 4] },
+  { id: 4, start: 70, stop: 90, video_id: 3, channel_id: 1, users: [2, 5] },
 ];
 
 
@@ -81,7 +81,7 @@ const likes = [
 
 
 const dummyObj = {
-  channel_id: 1,
+  id: 1,
   channel_name: 'land',
   background: path.join(__dirname, '../assets/land_background.jpg'),
   videos: [{
@@ -91,12 +91,14 @@ const dummyObj = {
       start: 43,
       stop: 48,
       video_id: 1,
+      channel_id: 1,
       users: [1, 2, 4],
     }, {
       id: 2,
       start: 74,
       stop: 82,
       video_id: 1,
+      channel_id: 1,
       users: [2, 3, 4],
     }],
   }, {
@@ -106,6 +108,7 @@ const dummyObj = {
       start: 38,
       stop: 42,
       video_id: 2,
+      channel_id: 1,
       users: [1, 3, 4],
     }],
   }, {
@@ -115,6 +118,7 @@ const dummyObj = {
       start: 70,
       stop: 73,
       video_id: 3,
+      channel_id: 1,
       users: [2, 5],
     }],
   }],
@@ -134,6 +138,7 @@ const searchCriteria = {
     'surfing',
     'jet ski',
     'wakeboarding',
+    'water skiing',
   ],
   3: [
     'skydiving',
