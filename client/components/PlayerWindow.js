@@ -107,7 +107,6 @@ export default class PlayerWindow extends React.Component {
     this.player = event.target;
 
     if (this.state.currentVideo) {
-
       // player state
       // 1 – unstarted
       // 0 – ended
@@ -168,14 +167,28 @@ export default class PlayerWindow extends React.Component {
       const newLike = {};
       const endTime = this.player.getCurrentTime();
 
-      newLike.start_time = Math.ceil(this.state.extremeStart - 3);
+      newLike.start_time = Math.ceil(this.state.extremeStart - 1);
       newLike.stop_time = Math.ceil(endTime);
       newLike.user_id = this.props.user_id;
       newLike.video_id = this.state.currentVideo.id;
       newLike.channel_id = this.state.currentVideo.channel_id;
       sendLike(newLike)
         .then((resp) => {
-          console.log(resp);
+          const newMoment = new Moment($('<div>').html(''), resp, this.player, this.props.user_id);
+          const mWidth = (resp.stop_time - resp.start_time) / this.state.totalTime;
+          const mLeft = resp.start_time / this.state.totalTime;
+          $('#moments .extreme').hide();
+          $('#moments').append(newMoment.render);
+          this.state.momentList.concat(newMoment);
+          newMoment.render.addClass('moment');
+          newMoment.render.css({
+            left: `${mLeft * 100}%`,
+            width: `${mWidth * 100}%`,
+          });
+          this.setState({
+            extremeStart: 0,
+            extremenStop: 0,
+          });
         });
     }
 
@@ -303,7 +316,31 @@ export default class PlayerWindow extends React.Component {
     );
   }
 
+  renderButtons() {
+    return (this.state.channel_id === 0 || this.state.channel_id === 'default')
+      ? <div className="player-buttons small-6 columns">
+        <button className="button alert" onClick={this.handleLame}>
+          <i className="fa fa-thumbs-down" />
+          Lame
+        </button>
+      </div>
+      : <div className="player-buttons small-6 columns">
+        <button
+          className="button"
+          onClick={this.handleExtreme}
+        >
+          <i className="fa fa-thumbs-up" />
+          {this.state.extreme ? 'Extreme Stop' : 'Extreme Start'}
+        </button>
+        <button className="button alert" onClick={this.handleLame}>
+          <i className="fa fa-thumbs-down" />
+          Lame
+        </button>
+      </div>;
+  }
+
   render() {
+    console.log('Current channel: ', this.state.channel_id);
     return (
       <div>
         <div className="flex-video widescreen">
@@ -328,19 +365,7 @@ export default class PlayerWindow extends React.Component {
             </div>
             <div id="percentageComplete" />
           </div>
-          <div className="player-buttons small-6 columns">
-            <button
-              className="button"
-              onClick={this.handleExtreme}
-            >
-              <i className="fa fa-thumbs-up" />
-              {this.state.extreme ? 'Extreme Stop' : 'Extreme Start'}
-            </button>
-            <button className="button alert" onClick={this.handleLame}>
-              <i className="fa fa-thumbs-down" />
-              Lame
-            </button>
-          </div>
+          { this.renderButtons() }
         </section>
       </div>
     );
@@ -350,4 +375,5 @@ export default class PlayerWindow extends React.Component {
 PlayerWindow.propTypes = {
   videos: React.PropTypes.array,
   channel_id: React.PropTypes.any,
+  user_id: React.PropTypes.any,
 };

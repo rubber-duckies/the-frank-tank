@@ -64,7 +64,7 @@ knex.migrate.latest([config]);
 /*
   ***********************************************************************
 
-  What do I do?
+  Returns an array of all the video objects for a particular channel
 
   ***********************************************************************
 */
@@ -82,7 +82,8 @@ knex.getVideosByChannel = (channelId) =>
 /*
   ***********************************************************************
 
-  What do I do?
+  Returns an array of user id's that have liked a particular time-based
+  like.
 
   ***********************************************************************
 */
@@ -94,7 +95,7 @@ knex.getUserLikesArray = (likeId) =>
 /*
   ***********************************************************************
 
-  What do I do?
+  Returns an array of all time-based likes objects for all channels.
 
   ***********************************************************************
 */
@@ -119,7 +120,8 @@ knex.getAllLikes = () => {
 /*
   ***********************************************************************
 
-  What do I do?
+  Returns an array of all time-based likes objects for a particular
+  channel.
 
   ***********************************************************************
 */
@@ -144,7 +146,9 @@ knex.getLikesByChannel = (channelId) => {
 /*
   ***********************************************************************
 
-  What do I do?
+  Return a channel object for the default channel.  All video objects are
+  obtained from the database, shuffled, and the top nine are placed in
+  the 'videos' array of the channel object.
 
   ***********************************************************************
 */
@@ -170,7 +174,7 @@ knex.getDefaultChannel = () => {
       videosArray[index].time_based_likes = []
         .concat(likesArray.filter(like => like.video_id === video.id));
     });
-    channelResObj.videos = _.shuffle(videosArray).slice(0, 6);
+    channelResObj.videos = _.shuffle(videosArray).slice(0, 9);
     return channelResObj;
   });
 };
@@ -178,7 +182,7 @@ knex.getDefaultChannel = () => {
 /*
   ***********************************************************************
 
-  What do I do?
+  Returns a channel object for a specified channel.
 
   ***********************************************************************
 */
@@ -212,7 +216,9 @@ knex.getChannelById = (channelId) => {
 /*
   ***********************************************************************
 
-  What do I do?
+  Adds an array of videos returned by the YouTube search performed by the
+  server to the database. Returns an array of video objects for addition
+  to the currently playing channel.
 
   ***********************************************************************
 */
@@ -249,7 +255,8 @@ knex.addVideos = (videosArray, channelId) => {
 /*
   ***********************************************************************
 
-  What do I do?
+  Adds a new time-based like to the database and returns the new time-
+  based like object for addition to the current video.
 
   ***********************************************************************
 */
@@ -292,7 +299,9 @@ knex.createLike = (like) => {
 /*
   ***********************************************************************
 
-  What do I do?
+  Updates the likes_by_user database with a pairing of the current time-
+  based like id and the current user id. Returns the id of the updated
+  time-based like and an updated array of user ids that have liked it.
 
   ***********************************************************************
 */
@@ -314,7 +323,7 @@ knex.updateLike = (obj) =>
 /*
   ***********************************************************************
 
-  What do I do?
+  Initializes the database with dummy information
 
   ***********************************************************************
 */
@@ -401,7 +410,7 @@ knex.initDB = () => Promise.all([
 /*
   ***********************************************************************
 
-  What do I do?
+  Clears all information from the database and resets id counters to 0.
 
   ***********************************************************************
 */
@@ -418,7 +427,7 @@ knex.clear = () => Promise.all([
 /*
   ***********************************************************************
 
-  What do I do?
+  Resets the database to dummy values.
 
   ***********************************************************************
 */
