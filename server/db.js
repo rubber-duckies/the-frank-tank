@@ -49,7 +49,7 @@ const config = require('../knexfile');
 
 const env = 'development';
 const knex = require('knex')(config[env]);
-
+console.log('CONNECTION:' config[env].connection);
 knex.migrate.latest([config]);
 
 /*
