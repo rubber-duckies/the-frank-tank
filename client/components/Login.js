@@ -29,12 +29,19 @@ export default class LoginPage extends React.Component {
   }
 
   checkLoginCredentials(userdata){
-    
+    $.ajax({
+      url: '/login',
+      dataType: 'json',
+      type: 'POST',
+      data: JSON.stringify(userdata)
+    });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    // submit form handling
+    let user = this.state.username;
+    let pass = this.state.password;
+    checkLoginCredentials({'username': user, 'password': pass});
   }
 
   render() {
@@ -44,10 +51,10 @@ export default class LoginPage extends React.Component {
           <h2>Login</h2>
           <form id="login-form" onSubmit={this.handleSubmit}>
             <label for="username">Username:</label>
-            <input type="text" value={this.state.username} onChange={this.handleChange} />
+            <input type="text" value={this.state.username} onChange={this.handleUsernameChange} />
             <br />
             <label for="password">Password:</label>
-            <input type="text" value={this.state.password} onChange={this.handleChange} />
+            <input type="text" value={this.state.password} onChange={this.handlePasswordChange} />
             <br />
             <input type="submit" value="Log In" />
           </form>
