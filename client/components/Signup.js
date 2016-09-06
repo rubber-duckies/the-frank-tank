@@ -7,10 +7,6 @@ export default class SignupPage extends React.Component {
     };
   }
 
-  getInitialState() {
-    return {username: 'username', password: 'password'};
-  }
-
   componentWillMount() {
   }
 
@@ -20,8 +16,16 @@ export default class SignupPage extends React.Component {
   componentDidUpdate() {
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  getInitialState() {
+    return {username: 'username', password: 'password'};
+  }
+
+  handleUsernameChange(event) {
+    this.setState({username: event.target.value});
+  }
+
+  handlePasswordChange(event) {
+    this.setState({password: event.target.value});
   }
 
   handleSubmit(event) {
