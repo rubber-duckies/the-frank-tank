@@ -316,6 +316,7 @@ export default class PlayerWindow extends React.Component {
     );
   }
 
+  // chooses whether to render the "Extreme" button or not
   renderButtons() {
     return (this.state.channel_id === 0 || this.state.channel_id === 'default')
       ? <div className="player-buttons small-6 columns">
