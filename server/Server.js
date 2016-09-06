@@ -127,24 +127,14 @@ const dummyObj = {
 
 const searchCriteria = {
   1: [
-    'mountain biking',
-    'skateboarding',
-    'motorcross',
-    'stunt biking',
-    'snowboarding',
-    'snow skiing',
+    'cat cute',
+    'cat adorable'
   ],
   2: [
-    'surfing',
-    'jet ski',
-    'wakeboarding',
-    'water skiing',
+    'cat children',
   ],
   3: [
-    'skydiving',
-    'base jumping',
-    'bungee jumping',
-    'wingsuit',
+    'cat mean',
   ],
 };
 

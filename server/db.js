@@ -342,7 +342,7 @@ knex.initDB = () => Promise.all([
     { name: 'Gilbert' },
   ]),
   knex('videos').insert([
-    { url: 'OMflBAXJJKc', channel_id: 1 },
+    { url: 'tntOCGkgt98', channel_id: 1 },
     { url: 'x76VEPXYaI0', channel_id: 1 },
     { url: 'evj6y2xZCnM', channel_id: 1 },
     { url: '5XpU5M0ZCKM', channel_id: 2 },
