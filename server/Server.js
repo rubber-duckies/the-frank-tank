@@ -257,6 +257,24 @@ app.get('/loginFail', function(req, res){
   }
 );
 
+app.all('/testPage', isLoggedIn);
+app.get('/testPage', function(req, res){
+  res.send('You are allowd')
+});
+
+app.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+
+    //res.redirect('/');
+    res.send("you are not allows here!")
+}
+
 /*
   ***********************************************************************
   Responds to requests for specific channel.
