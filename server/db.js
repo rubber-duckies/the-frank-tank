@@ -47,7 +47,7 @@ Some background URLs for the default channel:
 const _ = require('underscore');
 const config = require('../knexfile');
 
-const env = 'development';
+const env = process.env.NODE_ENV;
 const knex = require('knex')(config[env]);
 console.log('CONNECTION:', config[env].connection);
 knex.migrate.latest([config]);
