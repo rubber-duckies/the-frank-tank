@@ -406,6 +406,18 @@ app.get('/videos/:id', (req, res) => {
 });
 
 /*
+  Endpoint for Mixtape --> Returns JSON Array of likes by a userId
+*/
+app.get('/mixtape/user/:id', (req, res) => {
+  db.getVideoLikesByUser(req.params.id)
+    .then(likes => res.status(200).send(likes))
+    .catch(err => {
+      console.log('ROUTE: /mixtape/user/:id ', err);
+      res.status(400).send();
+    });
+});
+
+/*
   *******************************************************************
   Spin up server on either NODE environmental variable or 8000(local)
   *******************************************************************
