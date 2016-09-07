@@ -344,9 +344,9 @@ knex.updateLike = (obj) =>
 
 knex.initDB = () => Promise.all([
   knex('channels').insert([
-    { id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg' },
-    { id: 2, name: 'sea', background: 'https://upload.wikimedia.org/wikipedia/commons/5/53/GabrielMedina-001.jpg' },
-    { id: 3, name: 'air', background: 'https://i.ytimg.com/vi/apYEQlGlUAY/maxresdefault.jpg' },
+    { id: 1, name: 'Kittens', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg' },
+    { id: 2, name: 'Jerks', background: 'https://upload.wikimedia.org/wikipedia/commons/5/53/GabrielMedina-001.jpg' },
+    { id: 3, name: 'Neko', background: 'https://i.ytimg.com/vi/apYEQlGlUAY/maxresdefault.jpg' },
   ]),
   knex('users').insert([
     { username: 'Joe'   , password: 'pwJoe'},
@@ -355,15 +355,15 @@ knex.initDB = () => Promise.all([
     { username: 'Ryan'  , password: 'pwRyan'},
   ]),
   knex('videos').insert([
-    { url: 'tntOCGkgt98', channel_id: 1 },
-    { url: 'x76VEPXYaI0', channel_id: 1 },
-    { url: 'evj6y2xZCnM', channel_id: 1 },
-    { url: '5XpU5M0ZCKM', channel_id: 2 },
-    { url: '-hfKtUT4ISs', channel_id: 2 },
-    { url: 'JYYsAxC0Dic', channel_id: 2 },
-    { url: 'rbFvzRsDBN4', channel_id: 3 },
-    { url: '-C_jPcUkVrM', channel_id: 3 },
-    { url: 'FHtvDA0W34I', channel_id: 3 },
+    { url: 'mmjlMgDSYFo', channel_id: 1 },
+    { url: 'OtRRUEs3o0c', channel_id: 1 },
+    { url: 'LI7-Cu-9wWM', channel_id: 1 },
+    { url: '1iPMazni3FA', channel_id: 2 },  // fail
+    { url: 'FAiKuOL8Os8', channel_id: 2 },
+    { url: 'ny5vGbTfB8c', channel_id: 2 },
+    { url: 'TdPuwnMv3gA', channel_id: 3 },  // 3 is japanese cat
+    { url: 'C9O28ne6bG8', channel_id: 3 },
+    { url: 'JTDdHYUb6zU', channel_id: 3 },
   ]),
   knex('likes').insert([
     { start_time: 43, stop_time: 48, video_id: 1, channel_id: 1 },

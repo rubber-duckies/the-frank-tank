@@ -136,10 +136,14 @@ const searchCriteria = {
     'cat adorable'
   ],
   2: [
-    'cat children',
+    'cat knocks',
+    'cat fail'
   ],
   3: [
-    'cat mean',
+    '猫',
+    '貓',
+    'ネコ',
+    'ねこ'
   ],
 };
 
