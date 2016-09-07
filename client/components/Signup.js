@@ -48,7 +48,7 @@ export default class SignupPage extends React.Component {
     return (
       <div>
         <section id="signup-section">
-          <h2>Login</h2>
+          <h2>Signup</h2>
           <form id="signup-form" onSubmit={this.handleSubmit}>
             <label for="username">Username:</label>
             <input type="text" value={this.state.username} onChange={this.handleUsernameChange} />

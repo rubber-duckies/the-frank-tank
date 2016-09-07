@@ -55,7 +55,7 @@ export default class App extends React.Component {
                 <NavBar changeChannel={(channelId) => this.changeChannel(channelId)} />
               </div>
             </div>
-            <div className="row">
+            <div className="row authrow">
               <div className="medium-6 columns">
                 <Login />
               </div>
