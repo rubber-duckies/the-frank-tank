@@ -66,15 +66,16 @@ passport.use('local-signup', new LocalStrategy({
 );
 
 passport.serializeUser(function (user, done) {
-    done(null, user.username);
+    //done(null, user.username);
+    done(null, user)
 });
 
-passport.deserializeUser(function(username, done) {
-    db.findUser(username)
-    .then((user,err)=>{
-        done(err, user);
-    });
-    //done(null, user);
+passport.deserializeUser(function(user, done) {
+    // db.findUser(username)
+    // .then((user,err)=>{
+    //     done(err, user);
+    // });
+    done(null, user);
 });
 
 
