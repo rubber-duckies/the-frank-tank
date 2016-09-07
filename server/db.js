@@ -49,6 +49,8 @@ const config = require('../knexfile');
 
 const env = process.env.NODE_ENV || 'development';
 const knex = require('knex')(config[env]);
+
+
 knex.migrate.latest([config]);
 /*
   Welcome to
@@ -67,12 +69,34 @@ knex.migrate.latest([config]);
   ***********************************************************************
 */
 
-knex.getUser = (username) =>
-  knex('users').where('username', username)
+knex.findUser = (username, callback) =>{
+  console.log("KNEX FIND USER HERE")
+  return knex('users').where('username', username)
   .then(user => {
-    return user;
-  });
+    console.log("KNEX FIND USER", user)
+    if(user.length === 0){
+      return null;
+    }
+    return user[0];
+  })
+};
 
+knex.addUser = (username, hashPw) =>{
+  console.log("KNEX ADD USER HERE", username, hashPw)
+  return knex('users').insert({username: username, password:hashPw}).returning('*');
+};
+
+// // methods ======================
+// knex.generateHash = function(password) {
+//     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+// };
+
+// knex.validPassword = function(password) {
+//   knex('users').where('username', username)
+//   .then(user => {
+//     return bcrypt.compareSync(password, user.password);
+//   });
+// };
 /*
   ***********************************************************************
 

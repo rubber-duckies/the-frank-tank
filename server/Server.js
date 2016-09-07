@@ -27,8 +27,11 @@ const _ = require('underscore');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
-const passport = require('passport');
+const morgan = require('morgan');
+//const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+var passport = require('./passport');
+const bcrypt   = require('bcrypt-nodejs');
 
 const db = require('./db');
 
@@ -148,62 +151,18 @@ const searchCriteria = {
 };
 
 /*
-  *******************
-  PASSPORT CONFIG
-  *******************
-*/
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    // db.findUser({ username: username }, function(err, user) {
-    //   if (err) { return done(err); }
-    //   if (!user) {
-    //     return done(null, false, { message: 'Incorrect username.' });
-    //   }
-    //   if (!user.validPassword(password)) {
-    //     return done(null, false, { message: 'Incorrect password.' });
-    //   }
-    //   return done(null, user);
-    // });
-
-    var user = {
-        id: '1',
-        username: 'admin',
-        password: 'pass'
-    }; 
-    if (username !== user.username) {
-        return done(null, false, { message: 'Incorrect username.' });
-    }
-    if (password !== user.password) {
-        return done(null, false, { message: 'Incorrect password.' });
-    }
-
-    return done(null, user);
-  }
-));
-
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
-
-passport.deserializeUser(function (user, done) {
-    done(null, user);
-});
-
-// middleware for passport
-app.use(cookieParser());
-app.use(session({secret: 'my cat is the cutest', cookie: {}}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash())
-
-/*
   ****************
   Middleware calls
   ****************
 */
-
+app.use(morgan('dev'));   // show requests in console
+app.use(cookieParser());
+// initialize passport
+app.use(session({secret: 'my cat is the cutest', cookie: {}}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash())
 app.use(bodyParser.json());
-
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.static(path.join(__dirname, '../assets')));
 
@@ -239,17 +198,51 @@ app.get('/', (req, res) => {
 
 /*
   ***********************************************************************
-  Initializes interface.
+  Auth through passport
 
   Response object:  Index.html file
   ***********************************************************************
 */
+
+app.get('/login', function (req, res) {
+  //?
+});
 
 app.post('/login',
   passport.authenticate('local', {
       successRedirect: '/loginSuccess',
       failureRedirect: '/loginFail'
 }));
+
+app.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+app.get('/signup', function(req, res) {
+    //res.render('signup.ejs', { message: req.flash('signupMessage') });
+});
+
+
+app.post('/signup',
+  passport.authenticate('local-signup', {
+      successRedirect: '/loginSuccess',
+      failureRedirect: '/loginFail'
+}));
+
+// app.post('/signup', function(req,res){
+//     var username = req.body.username;
+//     var password = req.body.password;
+//     db.findUser(username)
+//     .then(user=>{
+//       if(user){
+//         res.send('username already taken');
+//       } 
+//       db.addUser(username, bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
+//       .then(user=>{})
+//     })
+//   }
+// });
 
 app.get('/loginSuccess', function(req, res){
     res.send('LOG IN SUCCESS');
@@ -264,11 +257,6 @@ app.get('/loginFail', function(req, res){
 app.all('/testPage', isLoggedIn);
 app.get('/testPage', function(req, res){
   res.send('You are allowd')
-});
-
-app.get('/logout', function (req, res) {
-    req.logout();
-    res.redirect('/');
 });
 
 function isLoggedIn(req, res, next) {
