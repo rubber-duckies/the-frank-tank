@@ -4,7 +4,7 @@ const NavModel = {};
 
 NavModel.changeChannel = (channelId) => {
   console.log('Great Success! Channel ID: ', channelId);
-  const channelUrl = `http://localhost:8000/channel/${
+  const channelUrl = `/channel/${
     channelId === 1 ||
     channelId === 2 ||
     channelId === 3
