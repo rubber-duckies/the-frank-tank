@@ -171,7 +171,7 @@ knex.getDefaultChannel = () => {
   const channelResObj = {
     id: 0,
     name: 'default',
-    background: 'https://i.imgur.com/PmqssGZ.jpg',
+    background: 'http://i.imgur.com/WkrPGRb.jpg',
   };
 
   let likesArray = [];
