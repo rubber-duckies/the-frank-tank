@@ -345,7 +345,7 @@ knex.updateLike = (obj) =>
 knex.initDB = () => Promise.all([
   knex('channels').insert([
     { id: 1, name: 'Kittens', background: 'https://static.pexels.com/photos/9056/pexels-photo.jpg' },
-    { id: 2, name: 'Jerks', background: 'https://texasagriculture.gov/portals/0/images/prodagg/fire.jpg' },
+    { id: 2, name: 'Cats Being Jerks', background: 'https://texasagriculture.gov/portals/0/images/prodagg/fire.jpg' },
     { id: 3, name: 'Neko', background: 'https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Great_Wave_off_Kanagawa.jpg' },
   ]),
   knex('users').insert([
