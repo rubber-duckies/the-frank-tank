@@ -25,7 +25,7 @@ passport.use(new LocalStrategy(
   // }
   db.findUser(username)
     .then(user =>{
-      console.log("PASSPORT FOUND USER", user);
+      console.log("PASSPORT FOUND USER", user, user.username, user.password);
       if (!user) {
         return done(null, false, { message: 'Incorrect username.' });
       }
@@ -63,40 +63,18 @@ passport.use('local-signup', new LocalStrategy({
       // })
     })
   })
-    // process.nextTick(function() {
-
-    // User.findOne({'local.email' :  email}, function(err, user) {
-    //     if (err)
-    //         return done(err);
-
-    //     if (user) {
-    //         return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-    //     } else {
-
-    //         var newUser            = new User();
-    //         newUser.local.email    = email;
-    //         newUser.local.password = newUser.generateHash(password);
-    //         newUser.save(function(err) {
-    //             if (err)
-    //                 throw err;
-    //             return done(null, newUser);
-    //         });
-    //     }
-
-    // });    
-
-    // });
-
 );
 
 passport.serializeUser(function (user, done) {
-    done(null, user);
+    done(null, user.username);
 });
 
-passport.deserializeUser(function(id, done) {
-    // User.findById(id, function(err, user) {
-    //     done(err, user);
-    // });
+passport.deserializeUser(function(username, done) {
+    db.findUser(username)
+    .then((user,err)=>{
+        done(err, user);
+    });
+    //done(null, user);
 });
 
 
