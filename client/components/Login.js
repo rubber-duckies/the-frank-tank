@@ -5,6 +5,10 @@ export default class LoginPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {username: 'username', password: 'password'};
+
+    this.handleUsernameChange= this.handleUsernameChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -25,6 +29,7 @@ export default class LoginPage extends React.Component {
   }
 
   checkLoginCredentials(userdata){
+    console.log("login-userdata: ", userdata)
     $.ajax({
       url: '/login',
       dataType: 'json',
@@ -33,8 +38,7 @@ export default class LoginPage extends React.Component {
     });
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
+  handleSubmit() {
     let user = this.state.username;
     let pass = this.state.password;
     checkLoginCredentials({'username': user, 'password': pass});
@@ -42,12 +46,12 @@ export default class LoginPage extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form>
         <label htmlFor="username">Username:</label>
-        <input type="text" value={this.state.username} onChange={this.handleUsernameChange} />
+        <input type="text" onChange={this.handleUsernameChange} />
         <label htmlFor="password">Password:</label>
-        <input type="text" value={this.state.password} onChange={this.handlePasswordChange} />
-        <input className="submit-dd" type="submit" value="Log In" />
+        <input type="password" onChange={this.handlePasswordChange} />
+        <button type="button" onClick={this.handleSubmit} >Signup</button>
       </form>
     );
   }

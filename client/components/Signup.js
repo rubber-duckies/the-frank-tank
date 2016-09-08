@@ -5,6 +5,10 @@ export default class SignupPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {username: 'username', password: 'password'};
+
+    this.handleUsernameChange= this.handleUsernameChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -33,21 +37,21 @@ export default class SignupPage extends React.Component {
     });
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
+  handleSubmit() {
     let user = this.state.username;
     let pass = this.state.password;
-    attemptSignup({'username': user, 'password': pass});
+    console.log("user/pass: ",user,pass);
+    this.attemptSignup({'username': user, 'password': pass});
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form>
         <label htmlFor="username">Username:</label>
-        <input type="text" value={this.state.username} onChange={this.handleUsernameChange} />
+        <input type="text" onChange={this.handleUsernameChange} />
         <label htmlFor="password">Password:</label>
-        <input type="text" value={this.state.password} onChange={this.handlePasswordChange} />
-        <input className="submit-dd" type="submit" value="Sign Up" />
+        <input type="password" onChange={this.handlePasswordChange} />
+        <button type="button" onClick={this.handleSubmit} >Signup</button>
       </form>
     );
   }
