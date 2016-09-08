@@ -29,14 +29,17 @@ export default class SignupPage extends React.Component {
   }
 
   attemptSignup(userdata){
-    console.log(userdata);
-
     var settings = {
-      "url": "/signup",
+      "async": true,
+      "crossDomain": true,
+      "url": "http://localhost:8000/signup",
       "method": "POST",
       "headers": {
-        "content-type": "application/json"
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+        "postman-token": "b6f487c8-26ee-9a29-f29e-d5b25e05d549"
       },
+      "processData": false,
       "data": JSON.stringify(userdata)
     }
 
@@ -44,18 +47,11 @@ export default class SignupPage extends React.Component {
       console.log(response);
     });
 
-    // $.ajax({
-    //   url: '/signup',
-    //   dataType: 'json',
-    //   type: 'POST',
-    //   data: userdata
-    // });
   }
 
   handleSubmit() {
     let user = this.state.username;
     let pass = this.state.password;
-    console.log("user/pass: ",user,pass);
     this.attemptSignup({'username': user, 'password': pass});
   }
 
