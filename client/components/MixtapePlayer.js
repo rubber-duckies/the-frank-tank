@@ -4,6 +4,8 @@ import { sendLike, Moment, getMoreVideos } from '../models/videoModel.js';
 import $ from '../models/lib/jquery';
 import MixtapeModel from '../models/mixtapeModel';
 
+// Use like: <MixtapePlayer user_id="1" />
+
 export default class MixtapePlayer extends React.Component {
 
   constructor(props) {
