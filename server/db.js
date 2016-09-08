@@ -49,7 +49,9 @@ const config = require('../knexfile');
 
 const env = process.env.NODE_ENV || 'development';
 const knex = require('knex')(config[env]);
-knex.migrate.latest([config]);
+
+
+//knex.migrate.latest([config]);
 /*
   Welcome to
    ___  _ _  _ _   _ _ _  _  ___  _ _   ___  ___  ___  __ __  _  ___  ___  ___  _
@@ -62,16 +64,24 @@ knex.migrate.latest([config]);
 /*
   ***********************************************************************
 
-  Returns user Id and password
+  Returns/Adds user info
 
   ***********************************************************************
 */
 
-knex.getUser = (username) =>
-  knex('users').where('username', username)
+knex.findUser = (username, callback) =>{
+  return knex('users').where('username', username)
   .then(user => {
-    return user;
-  });
+    if(user.length === 0){
+      return null;
+    }
+    return user[0];
+  })
+};
+
+knex.addUser = (username, hashPw) =>{
+  return knex('users').insert({username: username, password:hashPw}).returning('*');
+};
 
 /*
   ***********************************************************************
@@ -347,10 +357,8 @@ knex.initDB = () => Promise.all([
     { id: 3, name: 'Neko', background: 'https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Great_Wave_off_Kanagawa.jpg' },
   ]),
   knex('users').insert([
-    { username: 'Joe'   , password: 'pwJoe'},
-    { username: 'Frank' , password: 'pwFrank'},
-    { username: 'Rob'   , password: 'pwRob'},
-    { username: 'Ryan'  , password: 'pwRyan'},
+    { username: 'CDE'   , password: '$2a$08$Nxke/Uo4lyszdj8HOQyB0eYL/XRMx2MbgvPELLBiEBd9BHEfplLde'},
+    { username: 'CHI'   , password: '$2a$08$RdRSvizmfF9BH1VnCWh.yeIOYryIcFKbPVWXp2JyFv2Z9OFmdf71O'},
   ]),
   knex('videos').insert([
     { url: 'mmjlMgDSYFo', channel_id: 1 },
