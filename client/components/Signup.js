@@ -45,7 +45,6 @@ export default class SignupPage extends React.Component {
     $.ajax(settings).done(function (response) {
       console.log(response);
     });
-
   }
 
   handleSubmit() {
