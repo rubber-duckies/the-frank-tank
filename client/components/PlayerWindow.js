@@ -1,7 +1,9 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 import { sendLike, Moment, getMoreVideos } from '../models/videoModel.js';
-// import $ from '../models/lib/jquery';
+
+
+
 
 export default class PlayerWindow extends React.Component {
   constructor(props) {
@@ -349,6 +351,7 @@ export default class PlayerWindow extends React.Component {
               onMouseDown={this.handleMouseDown}
               onMouseUp={this.handleMouseUp}
             />
+
           </div>
         </section>
 
@@ -361,7 +364,11 @@ export default class PlayerWindow extends React.Component {
           </div>
           { this.renderButtons() }
         </section>
+        <div>
+         <VideoDescription/>
+         </div>
       </div>
+
     );
   }
 }
