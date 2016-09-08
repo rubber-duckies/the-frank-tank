@@ -23,9 +23,9 @@ export default class NavBar extends React.Component {
         <li className="is-dropdown-submenu-parent">
           <a>Channels</a>
           <ul className="menu">
-            <li value="1" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Land</a></li>
-            <li value="2" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Sea</a></li>
-            <li value="3" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Air</a></li>
+            <li value="1" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Kittens</a></li>
+            <li value="2" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Cats being jerks</a></li>
+            <li value="3" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Neko</a></li>
           </ul>
         </li>
         <li value="'default'" onClick={(e) => this.handleChange(e.currentTarget.value)}>
