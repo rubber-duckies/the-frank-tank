@@ -35,11 +35,8 @@ export default class LoginPage extends React.Component {
       "url": "/login",
       "method": "POST",
       "headers": {
-        "content-type": "application/json",
-        "cache-control": "no-cache",
-        "postman-token": "774f1a6b-8aed-7a9f-1ae9-9c151abc73cc"
+        "content-type": "application/json"
       },
-      "processData": false,
       "data": JSON.stringify(userdata)
     }
 

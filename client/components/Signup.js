@@ -4,7 +4,9 @@ import NavBar from './NavBar';
 export default class SignupPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {username: 'username', password: 'password'};
+    this.state = {
+      username: 'username', 
+      password: 'password'};
 
     this.handleUsernameChange= this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -35,11 +37,8 @@ export default class SignupPage extends React.Component {
       "url": "/signup",
       "method": "POST",
       "headers": {
-        "content-type": "application/json",
-        "cache-control": "no-cache",
-        "postman-token": "b6f487c8-26ee-9a29-f29e-d5b25e05d549"
+        "content-type": "application/json"
       },
-      "processData": false,
       "data": JSON.stringify(userdata)
     }
 
@@ -57,6 +56,7 @@ export default class SignupPage extends React.Component {
 
   render() {
     return (
+      // 
       <form>
         <label htmlFor="username">Username:</label>
         <input type="text" onChange={this.handleUsernameChange} />
