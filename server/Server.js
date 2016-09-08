@@ -34,9 +34,10 @@ var passport = require('./passport');
 const db = require('./db');
 
 // Duplicate the 'keys_copyMe.js' file, rename it 'keys.js', and paste in your Google API key
-// const keys = require('./keys');
+const keys = require('./keys');
 
-const auth = process.env.CLIENT_ID//keys.CLIENT_ID;
+const auth = process.env.CLIENT_ID || keys.CLIENT_ID;
+//const auth = keys.CLIENT_ID;
 
 const youtube = google.youtube({ version: 'v3', auth });
 
@@ -49,13 +50,19 @@ const serverMessage = `Listening on port: ${serverUrl}`;
 const searchCriteria = {
   1: [
     'cat cute',
-    'cat adorable'
+    'cat adorable',
+    'kitten',
+    'kitty'
   ],
   2: [
+    'cat fail',
+    'cat jerks',
+    'cat being asshole',
     'cat knocks',
-    'cat fail'
   ],
   3: [
+    'japanese cat',
+    'Maru cat',
     '猫',
     '貓',
     'ネコ',
@@ -365,7 +372,7 @@ app.get('/videos/:id', (req, res) => {
       order: 'viewCount',
       type: 'video',
       videoDefinition: 'high',
-      videoDuration: 'medium',
+      //videoDuration: 'medium',
       fields: 'items/id',
       videoDimension: '2d',
       videoEmbeddable: 'true',
@@ -373,6 +380,7 @@ app.get('/videos/:id', (req, res) => {
     };
 
     youtube.search.list(params, (err, resp) => {
+      console.log("YOUTUBE", err, "RESP", resp);
       if (err) {
         res.status(404).send('Search failed.  Youtube\'s fault');
       } else if (resp.items.length) {
