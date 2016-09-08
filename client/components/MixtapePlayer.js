@@ -64,6 +64,15 @@ export default class MixtapePlayer extends React.Component {
           // Schedule next updateVideo timeout
           this.updateVideo(momentIterator, player,
             (moment.stop_time - moment.start_time) * 1000);
+          // We don't have any more moments or videos -- reset and loop again!
+        } else {
+          this.momentIterator.reset();
+          this.setState({
+            currentVideo: {
+              url: this.momentIterator.nextVideo()
+            }
+          });
+          this.currentMoment = this.momentIterator.nextMoment();
         }
       } else {
         console.log('Not there yet: ', player.getCurrentTime(), ' ', this.currentMoment.stop_time);
