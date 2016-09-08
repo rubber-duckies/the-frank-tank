@@ -58,6 +58,10 @@ function createMomentIterator (likes) {
       }
       currentMoment += 1;
       return likes[currentVideo].moments[currentMoment];
+    },
+    reset: function () {
+      currentVideo = -1;
+      currentMoment = -1;
     }
   };
   return iterator;
