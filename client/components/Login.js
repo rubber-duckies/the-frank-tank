@@ -32,7 +32,7 @@ export default class LoginPage extends React.Component {
     var settings = {
       "async": true,
       "crossDomain": true,
-      "url": "http://localhost:8000/login",
+      "url": "/login",
       "method": "POST",
       "headers": {
         "content-type": "application/json",

@@ -32,7 +32,7 @@ export default class SignupPage extends React.Component {
     var settings = {
       "async": true,
       "crossDomain": true,
-      "url": "http://localhost:8000/signup",
+      "url": "/signup",
       "method": "POST",
       "headers": {
         "content-type": "application/json",
