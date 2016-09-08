@@ -64,6 +64,20 @@ knex.migrate.latest([config]);
 /*
   ***********************************************************************
 
+  Returns user Id and password
+
+  ***********************************************************************
+*/
+
+knex.getUser = (username) =>
+  knex('users').where('username', username)
+  .then(user => {
+    return user;
+  });
+
+/*
+  ***********************************************************************
+
   Returns an array of all the video objects for a particular channel
 
   ***********************************************************************
@@ -335,14 +349,13 @@ knex.initDB = () => Promise.all([
     { id: 3, name: 'air', background: 'https://i.ytimg.com/vi/apYEQlGlUAY/maxresdefault.jpg' },
   ]),
   knex('users').insert([
-    { name: 'Joe' },
-    { name: 'Frank' },
-    { name: 'Rob' },
-    { name: 'Ryan' },
-    { name: 'Gilbert' },
+    { username: 'Joe'   , password: 'pwJoe'},
+    { username: 'Frank' , password: 'pwFrank'},
+    { username: 'Rob'   , password: 'pwRob'},
+    { username: 'Ryan'  , password: 'pwRyan'},
   ]),
   knex('videos').insert([
-    { url: 'OMflBAXJJKc', channel_id: 1 },
+    { url: 'tntOCGkgt98', channel_id: 1 },
     { url: 'x76VEPXYaI0', channel_id: 1 },
     { url: 'evj6y2xZCnM', channel_id: 1 },
     { url: '5XpU5M0ZCKM', channel_id: 2 },

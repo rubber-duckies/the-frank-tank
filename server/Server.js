@@ -24,6 +24,11 @@ const babelify = require('babelify');
 const browserify = require('browserify-middleware');
 const google = require('googleapis');
 const _ = require('underscore');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const flash = require('express-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 const db = require('./db');
 
@@ -127,26 +132,65 @@ const dummyObj = {
 
 const searchCriteria = {
   1: [
-    'mountain biking',
-    'skateboarding',
-    'motorcross',
-    'stunt biking',
-    'snowboarding',
-    'snow skiing',
+    'cat cute',
+    'cat adorable'
   ],
   2: [
-    'surfing',
-    'jet ski',
-    'wakeboarding',
-    'water skiing',
+    'cat children',
   ],
   3: [
-    'skydiving',
-    'base jumping',
-    'bungee jumping',
-    'wingsuit',
+    'cat mean',
   ],
 };
+
+/*
+  *******************
+  PASSPORT CONFIG
+  *******************
+*/
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    // db.findUser({ username: username }, function(err, user) {
+    //   if (err) { return done(err); }
+    //   if (!user) {
+    //     return done(null, false, { message: 'Incorrect username.' });
+    //   }
+    //   if (!user.validPassword(password)) {
+    //     return done(null, false, { message: 'Incorrect password.' });
+    //   }
+    //   return done(null, user);
+    // });
+
+    var user = {
+        id: '1',
+        username: 'admin',
+        password: 'pass'
+    }; 
+    if (username !== user.username) {
+        return done(null, false, { message: 'Incorrect username.' });
+    }
+    if (password !== user.password) {
+        return done(null, false, { message: 'Incorrect password.' });
+    }
+
+    return done(null, user);
+  }
+));
+
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+    done(null, user);
+});
+
+// middleware for passport
+app.use(cookieParser());
+app.use(session({secret: 'my cat is the cutest', cookie: {}}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash())
 
 /*
   ****************
@@ -188,6 +232,48 @@ app.get('/app-bundle.js',
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/public/Index.html'));
 });
+
+/*
+  ***********************************************************************
+  Initializes interface.
+
+  Response object:  Index.html file
+  ***********************************************************************
+*/
+
+app.post('/login',
+  passport.authenticate('local', {
+      successRedirect: '/loginSuccess',
+      failureRedirect: '/loginFail'
+}));
+
+app.get('/loginSuccess', function(req, res){
+    res.send('LOG IN SUCCESS');
+  }
+);
+
+app.get('/loginFail', function(req, res){
+    res.send('LOG IN FAIL');
+  }
+);
+
+app.all('/testPage', isLoggedIn);
+app.get('/testPage', function(req, res){
+  res.send('You are allowd')
+});
+
+app.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+
+    //res.redirect('/');
+    res.send("you are not allows here!")
+}
 
 /*
   ***********************************************************************
