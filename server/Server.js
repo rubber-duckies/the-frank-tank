@@ -34,9 +34,9 @@ var passport = require('./passport');
 const db = require('./db');
 
 // Duplicate the 'keys_copyMe.js' file, rename it 'keys.js', and paste in your Google API key
-const keys = require('./keys');
+//const keys = require('./keys');
 
-const auth = process.env.CLIENT_ID || keys.CLIENT_ID;
+const auth = process.env.CLIENT_ID;
 //const auth = keys.CLIENT_ID;
 
 const youtube = google.youtube({ version: 'v3', auth });
