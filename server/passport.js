@@ -36,7 +36,7 @@ passport.use('local-signup', new LocalStrategy({
         passReqToCallback : true 
     },
   function(req, username, password, done) {
-    console.log("req/user/pass: ", req, username, password);
+    console.log("req/user/pass: ", req.body, username, password);
     process.nextTick(function() {
       return db.findUser(username)
       .then((user) => {
@@ -46,7 +46,8 @@ passport.use('local-signup', new LocalStrategy({
           var hashPassword =  bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
           db.addUser(username, hashPassword)
           .then((user)=>{
-            return done(null, user); 
+            console.log("LOCAL SIGNUP", user[0])
+            return done(null, user[0]); 
           });
         }
       })
@@ -62,14 +63,17 @@ passport.use('local-signup', new LocalStrategy({
   ***********************************************************************
 */
 passport.serializeUser(function (user, done) {
+  console.log("SERIALIZE", JSON.stringify(user));
     done(null, user.username);
 });
 
 passport.deserializeUser(function(user, done) {
+  console.log("DESERIALIZE", JSON.stringify(user));
     db.findUser(user)
     .then((user,err)=>{
         done(err, user);
     });
+    //done(user);
 });
 
 

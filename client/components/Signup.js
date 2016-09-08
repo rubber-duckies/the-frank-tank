@@ -29,12 +29,27 @@ export default class SignupPage extends React.Component {
   }
 
   attemptSignup(userdata){
-    $.ajax({
-      url: '/signup',
-      dataType: 'json',
-      type: 'POST',
-      data: JSON.stringify(userdata)
+    console.log(userdata);
+
+    var settings = {
+      "url": "/signup",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "data": JSON.stringify(userdata)
+    }
+
+    $.ajax(settings).done(function (response) {
+      console.log(response);
     });
+
+    // $.ajax({
+    //   url: '/signup',
+    //   dataType: 'json',
+    //   type: 'POST',
+    //   data: userdata
+    // });
   }
 
   handleSubmit() {

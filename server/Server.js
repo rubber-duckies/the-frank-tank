@@ -143,6 +143,14 @@ app.get('/signup', function(req, res) {
     //res.render('signup.ejs', { message: req.flash('signupMessage') });
 });
 
+// app.post('/signup', function(req,res){
+//   console.log("sing up, body", req.body, "data: ", req.data);
+
+//   passport.authenticate('local-signup', {
+//       successRedirect: '/loginSuccess',
+//       failureRedirect: '/loginFail'
+//   })(req)
+// });
 
 app.post('/signup',
   passport.authenticate('local-signup', {
