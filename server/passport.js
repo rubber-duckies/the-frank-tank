@@ -15,10 +15,11 @@ passport.use(new LocalStrategy(
   db.findUser(username)
     .then(user =>{
       if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
+        //return done(null, false, { message: 'Incorrect username.' });
+        return done(JSON.stringify({ 'errorMessage': 'Incorrect username.' }), false);
       }
       if (!bcrypt.compareSync(password, user.password)) {
-        return done(null, false, { message: 'Incorrect password.' });
+        return done(JSON.stringify({ 'errorMessage': 'Incorrect password.' }), false);
       }
       return done(null, user);
     });
@@ -41,7 +42,7 @@ passport.use('local-signup', new LocalStrategy({
       return db.findUser(username)
       .then((user) => {
         if(user){
-          return done(null, false, { message: 'That username is already taken.'});
+          return done(JSON.stringify({ 'errorMessage': 'That username is already taken.'}), false);
         } else {
           var hashPassword =  bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
           db.addUser(username, hashPassword)

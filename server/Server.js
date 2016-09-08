@@ -159,12 +159,24 @@ app.post('/signup',
 }));
 
 app.get('/loginSuccess', isLoggedIn, function(req, res){
-    res.send('LOG IN SUCCESS');
+    console.log("LOGIN FAIL",req);
+    var result = {
+      errorMessage:"", //error message
+      username:req.user.username,
+      isSuccessful: true 
+    }
+    res.send(result);
   }
 );
 
 app.get('/loginFail', function(req, res){
-    res.send('LOG IN FAIL');
+  console.log("LOGIN FAIL",req.session.messages);
+    var result = {
+      errorMessage:"", 
+      username:"",
+      isSuccessful: false 
+    }
+    res.send(result);
   }
 );
 
