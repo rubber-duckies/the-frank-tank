@@ -18,6 +18,7 @@ export default class App extends React.Component {
       channel_id: 'default',
       id: 0,
       showMixtape: false,
+      signedin: false
     };
   }
 
@@ -64,6 +65,7 @@ export default class App extends React.Component {
                 this.setState({ showMixtape: true })
               }
             }
+            signedin={this.state.signedin}
             changeChannel={ (channelId) => this.changeChannel(channelId) }
           />
         </header>

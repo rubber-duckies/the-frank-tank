@@ -45,7 +45,7 @@ export default class LoginPage extends React.Component {
     }
 
     $.ajax(settings).done(function (response) {
-      console.log(response);
+ 
     });
   }
 
