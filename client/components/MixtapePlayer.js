@@ -19,7 +19,7 @@ export default class MixtapePlayer extends React.Component {
     this.momentIterator = null;
     this.currentMoment = null;
 
-    MixtapeModel.getMomentIteratorByUser(this.props.user_id)
+    MixtapeModel.getMomentIteratorForUser()
       .then((iter) => {
         if (iter !== null) {
           this.momentIterator = iter;
@@ -91,12 +91,15 @@ export default class MixtapePlayer extends React.Component {
   handleReadyState(event) {
     console.log('handle ready state');
     var player = event.target;
+    player.mute();
     var moment = this.currentMoment;
     player.seekTo(moment.start_time);
     console.log('Moment: ', moment);
     var delay = (moment.stop_time - moment.start_time) * 1000;
     console.log('Delay1: ', delay);
-    this.updateVideo(this.momentIterator, player, delay);
+    if (this.momentIterator !== null) {
+      this.updateVideo(this.momentIterator, player, delay);
+    }
   }
 
   handleStateChange(event) {
@@ -156,5 +159,5 @@ export default class MixtapePlayer extends React.Component {
 }
 
 MixtapePlayer.propTypes = {
-  user_id: React.PropTypes.any,
+  //user_id: React.PropTypes.any,
 };

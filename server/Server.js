@@ -408,7 +408,7 @@ app.get('/videos/:id', (req, res) => {
 /*
   Endpoint for Mixtape --> Returns JSON Array of likes by a userId
 */
-app.all('/testPage', isLoggedIn);
+app.all('/mixtape', isLoggedIn);
 app.get('/mixtape', (req, res) => {
   db.getVideoLikesByUser(req.user.id)
     .then(likes => res.status(200).send(likes))

@@ -18,6 +18,10 @@ export default class NavBar extends React.Component {
     this.props.changeChannel(value);
   }
 
+  handleMixtape() {
+    this.props.onMixtapeSelected();
+  }
+
   render() {
     return (
       <div className="container">
@@ -36,17 +40,17 @@ export default class NavBar extends React.Component {
                 <li value="3" onClick={(e) => this.handleChange(e.currentTarget.value)}><a>Air</a></li>
               </ul>
             </li>
-            <li><a href="#">Mixtape</a></li>
+            <li><a href="#" onClick={ (e) => { e.preventDefault(); this.handleMixtape() } }>Mixtape</a></li>
           </ul>
 
         </div>
         <div className="medium-6 columns" id="logsign-buttons">
-        
+
           <button className="button" type="button" data-toggle="login-dropdown">Login</button>
           <div className="dropdown-pane dropdown" id="login-dropdown" data-dropdown data-auto-focus="true">
           <Login />
           </div>
-          
+
           <button className="button" type="button" data-toggle="signup-dropdown">Signup</button>
           <div className="dropdown-pane dropdown" id="signup-dropdown" data-dropdown data-auto-focus="true">
           <Signup />
@@ -61,4 +65,5 @@ export default class NavBar extends React.Component {
 
 NavBar.propTypes = {
   changeChannel: React.PropTypes.func,
+  onMixtapeSelected: React.PropTypes.func
 };
