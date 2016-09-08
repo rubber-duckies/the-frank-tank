@@ -95,6 +95,7 @@ knex.addUser = (username, hashPw) =>{
 knex.getVideosByChannel = (channelId) =>
   knex('videos').where('channel_id', channelId)
   .then(videos => {
+    
     const videosArray = videos;
     videos.forEach((video, index) => {
       videosArray[index].time_based_likes = [];
@@ -218,6 +219,7 @@ knex.getChannelById = (channelId) => {
   // Build channel object by channel id
   return knex.getLikesByChannel(channelId)
   .then(likes => {
+
     likesArray = likes;
     return knex.getVideosByChannel(channelId);
   })
@@ -250,8 +252,9 @@ knex.getChannelById = (channelId) => {
 knex.addVideos = (videosArray, channelId) => {
   let successMessage = '';
   let videos = [];
- console.log(videosArray)
+ 
   return Promise.all(
+
     videosArray.map(video => knex('videos').where('url', video.id.videoId))
   )
   .then(videosInDB => {
