@@ -52,6 +52,7 @@ const knex = require('knex')(config[env]);
 
 
 //knex.migrate.latest([config]);
+// knex.migrate.latest([config]);
 /*
   Welcome to
    ___  _ _  _ _   _ _ _  _  ___  _ _   ___  ___  ___  __ __  _  ___  ___  ___  _
@@ -455,5 +456,34 @@ knex.runInitDB = () =>
   knex.clear()
   .then(() => knex.initDB())
   .then(() => 'Database initialized!');
+
+/*
+  Retrieve Video Likes By User --> Primarily intended for use with Mixtape
+*/
+knex.getVideoLikesByUser = (userId) => {
+  console.log('a');
+  return knex
+    .from('users')
+    .where('users.id', userId)
+    .innerJoin('likes_by_user', 'users.id', 'likes_by_user.user_id')
+    .innerJoin('likes', 'likes_by_user.likes_id', 'likes.id')
+    .innerJoin('videos', 'likes.video_id', 'videos.id')
+    .orderBy('videos.url')
+    .then(likes => {
+      let groups = [];
+      for (var i = 0; i < likes.length; i++) {
+        var group = groups[groups.length - 1];
+        if (group && group.url === likes[i].url) {
+          group.moments.push({ start_time: likes[i].start_time, stop_time: likes[i].stop_time });
+        } else {
+          groups.push({
+            url: likes[i].url,
+            moments: [{ start_time: likes[i].start_time, stop_time: likes[i].stop_time }]
+          });
+        }
+      }
+      return groups;
+    });
+};
 
 module.exports = knex;

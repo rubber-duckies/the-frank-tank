@@ -34,9 +34,9 @@ var passport = require('./passport');
 const db = require('./db');
 
 // Duplicate the 'keys_copyMe.js' file, rename it 'keys.js', and paste in your Google API key
-const keys = require('./keys');
+// const keys = require('./keys');
 
-const auth = process.env.CLIENT_ID || keys.CLIENT_ID;
+const auth = process.env.CLIENT_ID; // || keys.CLIENT_ID;
 //const auth = keys.CLIENT_ID;
 
 const youtube = google.youtube({ version: 'v3', auth });
@@ -159,12 +159,24 @@ app.post('/signup',
 }));
 
 app.get('/loginSuccess', isLoggedIn, function(req, res){
-    res.send('LOG IN SUCCESS');
+    console.log("LOGIN FAIL",req);
+    var result = {
+      errorMessage:"", //error message
+      username:req.user.username,
+      isSuccessful: true 
+    }
+    res.send(result);
   }
 );
 
 app.get('/loginFail', function(req, res){
-    res.send('LOG IN FAIL');
+  console.log("LOGIN FAIL",req.session.messages);
+    var result = {
+      errorMessage:"", 
+      username:"",
+      isSuccessful: false 
+    }
+    res.send(result);
   }
 );
 
@@ -403,6 +415,18 @@ app.get('/videos/:id', (req, res) => {
   } else {
     res.status(400).send('Cannot add videos to that channel!');
   }
+});
+
+/*
+  Endpoint for Mixtape --> Returns JSON Array of likes by a userId
+*/
+app.get('/mixtape/user/:id', (req, res) => {
+  db.getVideoLikesByUser(req.params.id)
+    .then(likes => res.status(200).send(likes))
+    .catch(err => {
+      console.log('ROUTE: /mixtape/user/:id ', err);
+      res.status(400).send();
+    });
 });
 
 /*
