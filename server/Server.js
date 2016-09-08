@@ -33,11 +33,19 @@ var passport = require('./passport');
 
 const db = require('./db');
 
-// Duplicate the 'keys_copyMe.js' file, rename it 'keys.js', and paste in your Google API key
-// const keys = require('./keys');
+/*
+  *************************
+  create a .env file to hold environmental configuration
+  This file should be in the root directory of the project
+  This file expects the following variables:
 
-const auth = process.env.CLIENT_ID; // || keys.CLIENT_ID;
-//const auth = keys.CLIENT_ID;
+  CLIENT_ID=youtube_api_token
+  PORT=port_that_you_want_to_use
+  NODE_ENV=development
+  *************************
+*/
+
+const auth = process.env.CLIENT_ID;
 
 const youtube = google.youtube({ version: 'v3', auth });
 
