@@ -63,7 +63,7 @@ export default class SignupPage extends React.Component {
         <input type="text" placeholder="username" onChange={this.handleUsernameChange} />
         <label htmlFor="password">Password:</label>
         <input type="password" placeholder="password" onChange={this.handlePasswordChange} />
-        <button type="button" onClick={this.handleSubmit} >Signup</button>
+        <button type="button" className="submit-dd" onClick={this.handleSubmit} >Signup</button>
       </form>
     );
   }
