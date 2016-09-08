@@ -33,7 +33,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const db = require('./db');
 
 // Duplicate the 'keys_copyMe.js' file, rename it 'keys.js', and paste in your Google API key
-// const keys = require('./keys');
+const keys = require('./keys');
 
 const auth = process.env.CLIENT_ID//keys.CLIENT_ID;
 

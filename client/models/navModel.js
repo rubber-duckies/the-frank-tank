@@ -3,7 +3,6 @@ import $ from './lib/jquery';
 const NavModel = {};
 
 NavModel.changeChannel = (channelId) => {
-  console.log('Great Success! Channel ID: ', channelId);
   const channelUrl = `/channel/${
     channelId === 1 ||
     channelId === 2 ||
