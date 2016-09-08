@@ -64,7 +64,6 @@ passport.use('local-signup', new LocalStrategy({
   ***********************************************************************
 */
 passport.serializeUser(function (user, done) {
-  console.log("SERIALIZE", JSON.stringify(user));
     done(null, user.username);
 });
 
