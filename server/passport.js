@@ -43,6 +43,7 @@ passport.use('local-signup', new LocalStrategy({
         if(user){
           return done(null, false, { message: 'That username is already taken.'});
         } else {
+          console.log("reach pp46: ", user)
           var hashPassword =  bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
           db.addUser(username, hashPassword)
           .then((user)=>{

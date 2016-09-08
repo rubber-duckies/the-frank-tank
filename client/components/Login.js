@@ -41,7 +41,7 @@ export default class LoginPage extends React.Component {
   handleSubmit() {
     let user = this.state.username;
     let pass = this.state.password;
-    checkLoginCredentials({'username': user, 'password': pass});
+    this.checkLoginCredentials({'username': user, 'password': pass});
   }
 
   render() {
