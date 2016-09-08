@@ -38,17 +38,15 @@ export default class SignupPage extends React.Component {
   }
 
   handleSubmit() {
-    // event.preventDefault();
     let user = this.state.username;
     let pass = this.state.password;
     console.log("user/pass: ",user,pass);
     this.attemptSignup({'username': user, 'password': pass});
   }
 
-    //<input className="submit-dd" type="submit" value="Sign Up" />
   render() {
     return (
-      <form >
+      <form>
         <label htmlFor="username">Username:</label>
         <input type="text" onChange={this.handleUsernameChange} />
         <label htmlFor="password">Password:</label>

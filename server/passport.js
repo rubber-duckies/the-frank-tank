@@ -36,6 +36,7 @@ passport.use('local-signup', new LocalStrategy({
         passReqToCallback : true 
     },
   function(req, username, password, done) {
+    console.log("req/user/pass: ", req, username, password);
     process.nextTick(function() {
       return db.findUser(username)
       .then((user) => {
