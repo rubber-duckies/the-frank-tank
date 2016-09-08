@@ -467,7 +467,23 @@ knex.getVideoLikesByUser = (userId) => {
     .where('users.id', userId)
     .innerJoin('likes_by_user', 'users.id', 'likes_by_user.user_id')
     .innerJoin('likes', 'likes_by_user.likes_id', 'likes.id')
-    .innerJoin('videos', 'likes.video_id', 'videos.id');
+    .innerJoin('videos', 'likes.video_id', 'videos.id')
+    .orderBy('videos.url')
+    .then(likes => {
+      let groups = [];
+      for (var i = 0; i < likes.length; i++) {
+        var group = groups[groups.length - 1];
+        if (group && group.url === likes[i].url) {
+          group.moments.push({ start_time: likes[i].start_time, stop_time: likes[i].stop_time });
+        } else {
+          groups.push({
+            url: likes[i].url,
+            moments: [{ start_time: likes[i].start_time, stop_time: likes[i].stop_time }]
+          });
+        }
+      }
+      return groups;
+    });
 };
 
 module.exports = knex;
