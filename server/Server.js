@@ -31,7 +31,6 @@ const morgan = require('morgan');
 //const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 var passport = require('./passport');
-const bcrypt   = require('bcrypt-nodejs');
 
 const db = require('./db');
 
@@ -156,13 +155,13 @@ const searchCriteria = {
   ****************
 */
 app.use(morgan('dev'));   // show requests in console
+app.use(bodyParser.json());
 app.use(cookieParser());
 // initialize passport
-app.use(session({secret: 'my cat is the cutest', cookie: {}}));
+app.use(session({secret: 'kitty kity', cookie: {}}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
-app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.static(path.join(__dirname, '../assets')));
 
@@ -244,7 +243,7 @@ app.post('/signup',
 //   }
 // });
 
-app.get('/loginSuccess', function(req, res){
+app.get('/loginSuccess', isLoggedIn, function(req, res){
     res.send('LOG IN SUCCESS');
   }
 );
@@ -260,8 +259,10 @@ app.get('/testPage', function(req, res){
 });
 
 function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
-        return next();
+    if (req.isAuthenticated()){
+      console.log("is auth!")
+      return next();
+    }
 
     //res.redirect('/');
     res.send("you are not allows here!")

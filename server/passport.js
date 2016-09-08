@@ -11,18 +11,6 @@ var passport = require('passport');
 passport.use(new LocalStrategy(
   function(username, password, done) {
     console.log("PASSPORT FIND USER", username, password);
-  //   db.findUser(username, function(err, result){;
-  //     var user = result[0]
-  //     console.log("PASSPORT FOUND USER", user);
-  //     if (!user) {
-  //       return done(null, false, { message: 'Incorrect username.' });
-  //     }
-  //     if (!bcrypt.compareSync(password, user.password)) {
-  //       return done(null, false, { message: 'Incorrect password.' });
-  //     }
-  //     return done(null, user);
-  //   });
-  // }
   db.findUser(username)
     .then(user =>{
       console.log("PASSPORT FOUND USER", user, user.username, user.password);
@@ -57,10 +45,6 @@ passport.use('local-signup', new LocalStrategy({
           });
         }
       })
-      // .then((user)=>{
-      //   console.log("PASSPORT ADDED USER", user)
-      //   return done(null, user); 
-      // })
     })
   })
 );
