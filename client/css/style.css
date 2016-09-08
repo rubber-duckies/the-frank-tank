@@ -20,6 +20,16 @@ h1, h2 {
   text-shadow: 2px 2px 0px #000;
 }
 
+.authrow {
+  background-color: #225599;
+  padding-bottom: 30px;
+  margin-bottom: 10px;
+}
+#login-section, #signup-section {
+  line-height: 1.0;
+
+}
+
 .menu {
   /*position: relative;*/
   z-index: 200;
