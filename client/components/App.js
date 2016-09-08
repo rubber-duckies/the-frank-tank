@@ -1,6 +1,8 @@
 import React from 'react';
 import PlayerWindow from './PlayerWindow';
 import NavBar from './NavBar';
+import Login from './Login';
+import Signup from './Signup';
 import NavModel from '../models/navModel';
 import $ from '../models/lib/jquery';
 
@@ -46,14 +48,7 @@ export default class App extends React.Component {
     return (
       <div>
         <header>
-          <div className="container">
-            <div className="row">
-              <h1 className="medium-6 columns">The Frank Tank</h1>
-              <div className="medium-6 columns">
-                <NavBar changeChannel={(channelId) => this.changeChannel(channelId)} />
-              </div>
-            </div>
-          </div>
+          <NavBar changeChannel={(channelId) => this.changeChannel(channelId)} />
         </header>
 
         <div className="container">

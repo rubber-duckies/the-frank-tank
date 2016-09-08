@@ -42,7 +42,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidMount() {
-    console.log('component mounted');
 
     this.playHead = document.getElementById('playHead');
     this.timeline = document.getElementById('timeline');
@@ -50,7 +49,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('component updating');
 
     if (this.props.channel_id !== this.state.channel_id) {
       this.updateVideoList(this.props.videos);
@@ -103,7 +101,6 @@ export default class PlayerWindow extends React.Component {
 
   // ready state from player API
   handleReadyState(event) {
-    console.log('player ready');
     this.player = event.target;
 
     if (this.state.currentVideo) {
@@ -163,7 +160,6 @@ export default class PlayerWindow extends React.Component {
         extremeStop: this.player.getCurrentTime(),
       });
       e.target.classList.remove('alert');
-      console.log(this.state.currentVideo);
       const newLike = {};
       const endTime = this.player.getCurrentTime();
 
@@ -191,8 +187,6 @@ export default class PlayerWindow extends React.Component {
           });
         });
     }
-
-    console.log(this.state.extreme);
   }
 
   // skip to next video
@@ -341,7 +335,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   render() {
-    console.log('Current channel: ', this.state.channel_id);
     return (
       <div>
         <div className="flex-video widescreen">
