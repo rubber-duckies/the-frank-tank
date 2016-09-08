@@ -29,19 +29,29 @@ export default class LoginPage extends React.Component {
   }
 
   checkLoginCredentials(userdata){
-    console.log("login-userdata: ", userdata)
-    $.ajax({
-      url: '/login',
-      dataType: 'json',
-      type: 'POST',
-      data: JSON.stringify(userdata)
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "http://localhost:8000/login",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+        "postman-token": "774f1a6b-8aed-7a9f-1ae9-9c151abc73cc"
+      },
+      "processData": false,
+      "data": JSON.stringify(userdata)
+    }
+
+    $.ajax(settings).done(function (response) {
+      console.log(response);
     });
   }
 
   handleSubmit() {
     let user = this.state.username;
     let pass = this.state.password;
-    checkLoginCredentials({'username': user, 'password': pass});
+    this.checkLoginCredentials({'username': user, 'password': pass});
   }
 
   render() {

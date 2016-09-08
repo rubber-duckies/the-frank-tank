@@ -44,6 +44,7 @@ passport.use('local-signup', new LocalStrategy({
         if(user){
           return done(JSON.stringify({ 'errorMessage': 'That username is already taken.'}), false);
         } else {
+          console.log("reach pp46: ", user)
           var hashPassword =  bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
           db.addUser(username, hashPassword)
           .then((user)=>{
@@ -64,7 +65,6 @@ passport.use('local-signup', new LocalStrategy({
   ***********************************************************************
 */
 passport.serializeUser(function (user, done) {
-  console.log("SERIALIZE", JSON.stringify(user));
     done(null, user.username);
 });
 
