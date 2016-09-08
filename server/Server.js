@@ -28,7 +28,6 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
 const morgan = require('morgan');
-//const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 var passport = require('./passport');
 
@@ -46,91 +45,6 @@ const app = express();
 const serverUrl = process.env.PORT || 8000;
 
 const serverMessage = `Listening on port: ${serverUrl}`;
-
-/*
-  *****************************************************
-  Dummy objects to simulate PostgreSQL server structure
-  *****************************************************
-*/
-
-// background image url: https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg
-
-/*
-const channels = [
-  { id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg') },
-];
-
-const users = [
-  { id: 1, name: 'Joe' },
-  { id: 2, name: 'Frank' },
-  { id: 3, name: 'Rob' },
-  { id: 4, name: 'Ryan' },
-  { id: 5, name: 'Gilbert' },
-];
-
-const videos = [
-  { id: 1, url: 'OMflBAXJJKc', channel_id: 1 },
-  { id: 2, url: 'x76VEPXYaI0', channel_id: 1 },
-  { id: 3, url: 'evj6y2xZCnM', channel_id: 1 },
-];
-
-const likes = [
-  { id: 1, start: 43, stop: 48, video_id: 1, channel_id: 1, users: [1, 2, 4] },
-  { id: 2, start: 74, stop: 82, video_id: 1, channel_id: 1, users: [2, 3, 4] },
-  { id: 3, start: 38, stop: 42, video_id: 2, channel_id: 1, users: [1, 3, 4] },
-  { id: 4, start: 70, stop: 90, video_id: 3, channel_id: 1, users: [2, 5] },
-];
-
-
-  // *********************************************************
-  // Completed channel object should look something like this:
-  // *********************************************************
-
-
-const dummyObj = {
-  id: 1,
-  channel_name: 'land',
-  background: path.join(__dirname, '../assets/land_background.jpg'),
-  videos: [{
-    url: 'OMflBAXJJKc',
-    time_based_likes: [{
-      id: 1,
-      start: 43,
-      stop: 48,
-      video_id: 1,
-      channel_id: 1,
-      users: [1, 2, 4],
-    }, {
-      id: 2,
-      start: 74,
-      stop: 82,
-      video_id: 1,
-      channel_id: 1,
-      users: [2, 3, 4],
-    }],
-  }, {
-    url: 'x76VEPXYaI0',
-    time_based_likes: [{
-      id: 3,
-      start: 38,
-      stop: 42,
-      video_id: 2,
-      channel_id: 1,
-      users: [1, 3, 4],
-    }],
-  }, {
-    url: 'evj6y2xZCnM',
-    time_based_likes: [{
-      id: 4,
-      start: 70,
-      stop: 73,
-      video_id: 3,
-      channel_id: 1,
-      users: [2, 5],
-    }],
-  }],
-};
-*/
 
 const searchCriteria = {
   1: [
@@ -229,20 +143,6 @@ app.post('/signup',
       failureRedirect: '/loginFail'
 }));
 
-// app.post('/signup', function(req,res){
-//     var username = req.body.username;
-//     var password = req.body.password;
-//     db.findUser(username)
-//     .then(user=>{
-//       if(user){
-//         res.send('username already taken');
-//       } 
-//       db.addUser(username, bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
-//       .then(user=>{})
-//     })
-//   }
-// });
-
 app.get('/loginSuccess', isLoggedIn, function(req, res){
     res.send('LOG IN SUCCESS');
   }
@@ -255,7 +155,8 @@ app.get('/loginFail', function(req, res){
 
 app.all('/testPage', isLoggedIn);
 app.get('/testPage', function(req, res){
-  res.send('You are allowd')
+  console.log("print out user info", req.user)
+  res.send('You are allow')
 });
 
 function isLoggedIn(req, res, next) {
@@ -264,8 +165,7 @@ function isLoggedIn(req, res, next) {
       return next();
     }
 
-    //res.redirect('/');
-    res.send("you are not allows here!")
+    res.send("you shall not pass")
 }
 
 /*
