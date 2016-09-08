@@ -46,6 +46,7 @@ passport.use('local-signup', new LocalStrategy({
           var hashPassword =  bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
           db.addUser(username, hashPassword)
           .then((user)=>{
+            console.log("LOCAL SIGNUP", user)
             return done(null, user); 
           });
         }
@@ -62,14 +63,17 @@ passport.use('local-signup', new LocalStrategy({
   ***********************************************************************
 */
 passport.serializeUser(function (user, done) {
-    done(null, user.username);
+  console.log("SERIALIZE", JSON.stringify(user));
+    done(null, user[0].username);
 });
 
 passport.deserializeUser(function(user, done) {
+  console.log("DESERIALIZE", JSON.stringify(user));
     db.findUser(user)
     .then((user,err)=>{
         done(err, user);
     });
+    //done(user);
 });
 
 
