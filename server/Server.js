@@ -427,14 +427,7 @@ app.get('/videos/:id', (req, res) => {
     };
 
     youtube.search.list(params, (err, resp) => {
-<<<<<<< 35a651f52c28e4a02ae1bc1eba1204682c46c83b
 
-      console.log("YOUTUBE", err, "RESP", resp);
-
-=======
-      
-      
->>>>>>> Building videoDescription component
       if (err) {
         res.status(404).send('Search failed.  Youtube\'s fault');
       } else if (resp.items.length) {
