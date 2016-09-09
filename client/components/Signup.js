@@ -14,7 +14,6 @@ export default class SignupPage extends React.Component {
     this.handleUsernameChange= this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.setState = this.setState.bind(this);
   }
 
   componentWillMount() {
@@ -50,10 +49,10 @@ export default class SignupPage extends React.Component {
     .done(function (response) {
       console.log("attemptSignup response: ", response);
     })
-    .fail(function (response) {
+    .fail( (response) => {
       var messageObject = response.responseText;
-      console.log("messageObject: ", messageObject)
-      this.setState({ errorMessage: messageObject.errorMessage });
+      console.log("messageObject: ", messageObject, "+++response: ", response)
+      this.setState({ errorMessage: messageObject });
 
     });
   }
@@ -74,7 +73,7 @@ export default class SignupPage extends React.Component {
           <input type="password" placeholder="password" onChange={this.handlePasswordChange} />
           <button type="button" className="submit-dd" onClick={this.handleSubmit} >Signup</button>
         </form>
-        <p> { this.state.errorMessage ? this.state.errorMessage : null } </p>
+        <p className="errorMessage"> { this.state.errorMessage ? this.state.errorMessage : null } </p>
       </div>
     );
   }
