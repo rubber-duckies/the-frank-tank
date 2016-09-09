@@ -1,7 +1,7 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 import { sendLike, Moment, getMoreVideos } from '../models/videoModel.js';
-import $ from '../models/lib/jquery';
+// import $ from '../models/lib/jquery';
 
 export default class PlayerWindow extends React.Component {
   constructor(props) {
@@ -42,7 +42,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidMount() {
-    console.log('component mounted');
 
     this.playHead = document.getElementById('playHead');
     this.timeline = document.getElementById('timeline');
@@ -50,7 +49,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('component updating');
 
     if (this.props.channel_id !== this.state.channel_id) {
       this.updateVideoList(this.props.videos);
@@ -77,18 +75,24 @@ export default class PlayerWindow extends React.Component {
     const updatedList = list || this.state.videoList;
     this.checkVideoListLength(updatedList)
     .then(videos => {
+      let video = videos.shift();
       this.setState({
-        currentVideo: videos.shift(),
+        currentVideo: video,
         videoList: videos,
         channel_id: this.props.channel_id,
       });
+      // Fire video change callback
+      this.props.onVideoChange(video.url);
     })
     .catch(() => {
+      let video = updatedList.shift();
       this.setState({
-        currentVideo: updatedList.shift(),
+        currentVideo: video,
         videoList: updatedList,
         channel_id: this.props.channel_id,
       });
+      // Fire video change callback
+      this.props.onVideoChange(video.url);
     });
   }
 
@@ -103,7 +107,6 @@ export default class PlayerWindow extends React.Component {
 
   // ready state from player API
   handleReadyState(event) {
-    console.log('player ready');
     this.player = event.target;
 
     if (this.state.currentVideo) {
@@ -163,7 +166,6 @@ export default class PlayerWindow extends React.Component {
         extremeStop: this.player.getCurrentTime(),
       });
       e.target.classList.remove('alert');
-      console.log(this.state.currentVideo);
       const newLike = {};
       const endTime = this.player.getCurrentTime();
 
@@ -191,8 +193,6 @@ export default class PlayerWindow extends React.Component {
           });
         });
     }
-
-    console.log(this.state.extreme);
   }
 
   // skip to next video
@@ -341,7 +341,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   render() {
-    console.log('Current channel: ', this.state.channel_id);
     return (
       <div>
         <div className="flex-video widescreen">
@@ -377,4 +376,5 @@ PlayerWindow.propTypes = {
   videos: React.PropTypes.array,
   channel_id: React.PropTypes.any,
   user_id: React.PropTypes.any,
+  onVideoChange: React.PropTypes.func
 };

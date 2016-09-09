@@ -47,11 +47,12 @@ Some background URLs for the default channel:
 const _ = require('underscore');
 const config = require('../knexfile');
 
-const env = 'development';
+const env = process.env.NODE_ENV || 'development';
 const knex = require('knex')(config[env]);
 
-knex.migrate.latest([config]);
 
+//knex.migrate.latest([config]);
+// knex.migrate.latest([config]);
 /*
   Welcome to
    ___  _ _  _ _   _ _ _  _  ___  _ _   ___  ___  ___  __ __  _  ___  ___  ___  _
@@ -60,6 +61,28 @@ knex.migrate.latest([config]);
   |_|  `___'|_\_| |__/_/ |_| |_| |_|_| |_|  |_\_\`___'|_|_|_||_|<___/|___><___/<_>
 
 */
+
+/*
+  ***********************************************************************
+
+  Returns/Adds user info
+
+  ***********************************************************************
+*/
+
+knex.findUser = (username, callback) =>{
+  return knex('users').where('username', username)
+  .then(user => {
+    if(user.length === 0){
+      return null;
+    }
+    return user[0];
+  })
+};
+
+knex.addUser = (username, hashPw) =>{
+  return knex('users').insert({username: username, password:hashPw}).returning('*');
+};
 
 /*
   ***********************************************************************
@@ -157,7 +180,7 @@ knex.getDefaultChannel = () => {
   const channelResObj = {
     id: 0,
     name: 'default',
-    background: 'https://i.imgur.com/PmqssGZ.jpg',
+    background: 'http://i.imgur.com/WkrPGRb.jpg',
   };
 
   let likesArray = [];
@@ -330,41 +353,38 @@ knex.updateLike = (obj) =>
 
 knex.initDB = () => Promise.all([
   knex('channels').insert([
-    { id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg' },
-    { id: 2, name: 'sea', background: 'https://upload.wikimedia.org/wikipedia/commons/5/53/GabrielMedina-001.jpg' },
-    { id: 3, name: 'air', background: 'https://i.ytimg.com/vi/apYEQlGlUAY/maxresdefault.jpg' },
+    { id: 1, name: 'Kittens', background: 'https://static.pexels.com/photos/9056/pexels-photo.jpg' },
+    { id: 2, name: 'Cats Being Jerks', background: 'https://texasagriculture.gov/portals/0/images/prodagg/fire.jpg' },
+    { id: 3, name: 'Neko', background: 'https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Great_Wave_off_Kanagawa.jpg' },
   ]),
   knex('users').insert([
-    { name: 'Joe' },
-    { name: 'Frank' },
-    { name: 'Rob' },
-    { name: 'Ryan' },
-    { name: 'Gilbert' },
+    { username: 'CDE'   , password: '$2a$08$Nxke/Uo4lyszdj8HOQyB0eYL/XRMx2MbgvPELLBiEBd9BHEfplLde'},
+    { username: 'CHI'   , password: '$2a$08$RdRSvizmfF9BH1VnCWh.yeIOYryIcFKbPVWXp2JyFv2Z9OFmdf71O'},
   ]),
   knex('videos').insert([
-    { url: 'OMflBAXJJKc', channel_id: 1 },
-    { url: 'x76VEPXYaI0', channel_id: 1 },
-    { url: 'evj6y2xZCnM', channel_id: 1 },
-    { url: '5XpU5M0ZCKM', channel_id: 2 },
-    { url: '-hfKtUT4ISs', channel_id: 2 },
-    { url: 'JYYsAxC0Dic', channel_id: 2 },
-    { url: 'rbFvzRsDBN4', channel_id: 3 },
-    { url: '-C_jPcUkVrM', channel_id: 3 },
-    { url: 'FHtvDA0W34I', channel_id: 3 },
+    { url: 'mmjlMgDSYFo', channel_id: 1 },
+    { url: 'OtRRUEs3o0c', channel_id: 1 },
+    { url: 'LI7-Cu-9wWM', channel_id: 1 },
+    { url: '1iPMazni3FA', channel_id: 2 },  // fail
+    { url: 'FAiKuOL8Os8', channel_id: 2 },
+    { url: 'ny5vGbTfB8c', channel_id: 2 },
+    { url: 'TdPuwnMv3gA', channel_id: 3 },  // 3 is japanese cat
+    { url: 'C9O28ne6bG8', channel_id: 3 },
+    { url: 'JTDdHYUb6zU', channel_id: 3 },
   ]),
   knex('likes').insert([
-    { start_time: 43, stop_time: 48, video_id: 1, channel_id: 1 },
-    { start_time: 74, stop_time: 82, video_id: 1, channel_id: 1 },
+    { start_time: 23, stop_time: 48, video_id: 1, channel_id: 1 },
+    { start_time: 34, stop_time: 42, video_id: 1, channel_id: 1 },
     { start_time: 38, stop_time: 42, video_id: 2, channel_id: 1 },
-    { start_time: 70, stop_time: 90, video_id: 3, channel_id: 1 },
-    { start_time: 29, stop_time: 52, video_id: 4, channel_id: 2 },
-    { start_time: 80, stop_time: 98, video_id: 4, channel_id: 2 },
-    { start_time: 147, stop_time: 157, video_id: 5, channel_id: 2 },
+    { start_time: 10, stop_time: 50, video_id: 3, channel_id: 1 },
+    { start_time: 29, stop_time: 42, video_id: 4, channel_id: 2 },
+    { start_time: 30, stop_time: 28, video_id: 4, channel_id: 2 },
+    { start_time: 47, stop_time: 57, video_id: 5, channel_id: 2 },
     { start_time: 11, stop_time: 34, video_id: 6, channel_id: 2 },
     { start_time: 20, stop_time: 38, video_id: 7, channel_id: 3 },
     { start_time: 52, stop_time: 80, video_id: 7, channel_id: 3 },
-    { start_time: 170, stop_time: 194, video_id: 7, channel_id: 3 },
-    { start_time: 95, stop_time: 116, video_id: 8, channel_id: 3 },
+    { start_time: 70, stop_time: 94, video_id: 7, channel_id: 3 },
+    { start_time: 25, stop_time: 46, video_id: 8, channel_id: 3 },
     { start_time: 47, stop_time: 64, video_id: 9, channel_id: 3 },
   ]),
   knex('likes_by_user').insert([
@@ -436,5 +456,34 @@ knex.runInitDB = () =>
   knex.clear()
   .then(() => knex.initDB())
   .then(() => 'Database initialized!');
+
+/*
+  Retrieve Video Likes By User --> Primarily intended for use with Mixtape
+*/
+knex.getVideoLikesByUser = (userId) => {
+  console.log('a');
+  return knex
+    .from('users')
+    .where('users.id', userId)
+    .innerJoin('likes_by_user', 'users.id', 'likes_by_user.user_id')
+    .innerJoin('likes', 'likes_by_user.likes_id', 'likes.id')
+    .innerJoin('videos', 'likes.video_id', 'videos.id')
+    .orderBy('videos.url')
+    .then(likes => {
+      let groups = [];
+      for (var i = 0; i < likes.length; i++) {
+        var group = groups[groups.length - 1];
+        if (group && group.url === likes[i].url) {
+          group.moments.push({ start_time: likes[i].start_time, stop_time: likes[i].stop_time });
+        } else {
+          groups.push({
+            url: likes[i].url,
+            moments: [{ start_time: likes[i].start_time, stop_time: likes[i].stop_time }]
+          });
+        }
+      }
+      return groups;
+    });
+};
 
 module.exports = knex;

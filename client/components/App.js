@@ -1,8 +1,11 @@
 import React from 'react';
 import PlayerWindow from './PlayerWindow';
+import MixtapePlayer from './MixtapePlayer';
 import NavBar from './NavBar';
+import Login from './Login';
+import Signup from './Signup';
 import NavModel from '../models/navModel';
-import $ from '../models/lib/jquery';
+// import $ from '../models/lib/jquery';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -14,6 +17,8 @@ export default class App extends React.Component {
       channel: '',
       channel_id: 'default',
       id: 0,
+      showMixtape: false,
+      signedin: false
     };
   }
 
@@ -29,7 +34,13 @@ export default class App extends React.Component {
     });
   }
 
+  declareSignedIn(username){
+    console.log("declaring signed in")
+    this.setState({signedin: true, user: username});
+  }
+
   changeChannel(channelId) {
+    this.setState({ showMixtape: false });
     NavModel.changeChannel(channelId)
     .then(channelObj => {
       this.setState({
@@ -42,24 +53,39 @@ export default class App extends React.Component {
     });
   }
 
+  renderVideo() {
+    if (this.state.showMixtape) {
+      return (
+        <MixtapePlayer onVideoChange={ (url) => console.log(url) }/>
+      );
+    } else {
+      return <PlayerWindow
+        videos={this.state.videos}
+        channel_id={this.state.channel_id}
+        user_id="1"
+        onVideoChange={ (url) => console.log('PlayerWindow.onVideoChange: ' + url) }/>;
+    }
+  }
+
   render() {
     return (
       <div>
         <header>
-          <div className="container">
-            <div className="row">
-              <h1 className="medium-6 columns">The Frank Tank</h1>
-              <div className="medium-6 columns">
-                <NavBar changeChannel={(channelId) => this.changeChannel(channelId)} />
-              </div>
-            </div>
-          </div>
+          <NavBar
+            onMixtapeSelected={ () => {
+                this.setState({ showMixtape: true })
+              }
+            }
+            signedin={this.state.signedin}
+            changeChannel={ (channelId) => this.changeChannel(channelId) }
+            declareSignedIn={(username) => this.declareSignedIn(username)}
+          />
         </header>
 
         <div className="container">
           <div className="row column">
-            <h2>{this.state.channel}</h2>
-            <PlayerWindow videos={this.state.videos} channel_id={this.state.channel_id} user_id="1" />
+            <h2>{ this.state.showMixtape ? 'mixtape' : this.state.channel }</h2>
+            { this.renderVideo() }
           </div>
         </div>
       </div>
