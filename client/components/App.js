@@ -49,10 +49,8 @@ export default class App extends React.Component {
 
   renderVideo() {
     if (this.state.showMixtape) {
-      console.log('Showing mixtape component');
       return <MixtapePlayer />;
     } else {
-      console.log('Showing playwindow component');
       return <PlayerWindow videos={this.state.videos} channel_id={this.state.channel_id} user_id="1" />
     }
   }
@@ -63,7 +61,6 @@ export default class App extends React.Component {
         <header>
           <NavBar
             onMixtapeSelected={ () => {
-                console.log('Setting showMixtape to true');
                 this.setState({ showMixtape: true })
               }
             }

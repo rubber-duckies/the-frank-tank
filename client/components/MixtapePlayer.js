@@ -36,12 +36,9 @@ export default class MixtapePlayer extends React.Component {
 
   // Sets current video
   updateVideo(momentIterator, player, delay) {
-    console.log('Delay: ', delay);
     window.setTimeout(() => {
-      console.log('In updateVideo Timeout');
       // Have we actually passed the end of the current moment? Video could have been delayed.
       if (player.getCurrentTime() >= this.currentMoment.stop_time) {
-        console.log('Next Moment');
         // Do we have another moment for this video?
         if (momentIterator.hasNextMoment()) {
           // We do! set the next moment and seek to it's start_time
@@ -53,7 +50,6 @@ export default class MixtapePlayer extends React.Component {
             (moment.stop_time - moment.start_time) * 1000);
           // We don't have another moment. Do we have another video?
         } else if (momentIterator.hasNextVideo()) {
-          console.log('Next Video');
           //  We do! set the url for currentVideo so the youtube player can advance
           var url = momentIterator.nextVideo();
           var moment = momentIterator.nextMoment();
@@ -77,7 +73,6 @@ export default class MixtapePlayer extends React.Component {
           this.currentMoment = this.momentIterator.nextMoment();
         }
       } else {
-        console.log('Not there yet: ', player.getCurrentTime(), ' ', this.currentMoment.stop_time);
         // We have not yet truly reached end of the current moment
         // Schedule next updateVideo timeout
         this.updateVideo(momentIterator, player,
@@ -89,26 +84,21 @@ export default class MixtapePlayer extends React.Component {
 
   // ready state from player API
   handleReadyState(event) {
-    console.log('handle ready state');
     var player = event.target;
     player.mute();
     var moment = this.currentMoment;
     player.seekTo(moment.start_time);
-    console.log('Moment: ', moment);
     var delay = (moment.stop_time - moment.start_time) * 1000;
-    console.log('Delay1: ', delay);
     if (this.momentIterator !== null) {
       this.updateVideo(this.momentIterator, player, delay);
     }
   }
 
   handleStateChange(event) {
-    console.log(event.target.getPlayerState());
 
     var player = event.target;
     // When a new video is cued advance to the start_time of the currentMoment
     if (player.getPlayerState() === -1) {
-      console.log('Seeking to: ', this.currentMoment.start_time);
       player.seekTo(this.currentMoment.start_time);
     }
   }
