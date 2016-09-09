@@ -55,7 +55,9 @@ export default class App extends React.Component {
 
   renderVideo() {
     if (this.state.showMixtape) {
-      return <MixtapePlayer />;
+      return (
+        <MixtapePlayer onVideoChange={ (url) => console.log(url) }/>
+      );
     } else {
       return <PlayerWindow videos={this.state.videos} channel_id={this.state.channel_id} user_id="1" />
     }
