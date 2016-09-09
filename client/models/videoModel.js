@@ -1,4 +1,4 @@
-import $ from './lib/jquery';
+// import $ from './lib/jquery';
 
 // moments are highlight clips within a currently playing video
 export const Moment = (element, moment, player, userId) => {

@@ -1,10 +1,11 @@
 import React from 'react';
 import PlayerWindow from './PlayerWindow';
+import MixtapePlayer from './MixtapePlayer';
 import NavBar from './NavBar';
 import Login from './Login';
 import Signup from './Signup';
 import NavModel from '../models/navModel';
-import $ from '../models/lib/jquery';
+// import $ from '../models/lib/jquery';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -16,6 +17,7 @@ export default class App extends React.Component {
       channel: '',
       channel_id: 'default',
       id: 0,
+      showMixtape: false,
     };
   }
 
@@ -32,6 +34,7 @@ export default class App extends React.Component {
   }
 
   changeChannel(channelId) {
+    this.setState({ showMixtape: false });
     NavModel.changeChannel(channelId)
     .then(channelObj => {
       this.setState({
@@ -44,17 +47,31 @@ export default class App extends React.Component {
     });
   }
 
+  renderVideo() {
+    if (this.state.showMixtape) {
+      return <MixtapePlayer />;
+    } else {
+      return <PlayerWindow videos={this.state.videos} channel_id={this.state.channel_id} user_id="1" />
+    }
+  }
+
   render() {
     return (
       <div>
         <header>
-          <NavBar changeChannel={(channelId) => this.changeChannel(channelId)} />
+          <NavBar
+            onMixtapeSelected={ () => {
+                this.setState({ showMixtape: true })
+              }
+            }
+            changeChannel={ (channelId) => this.changeChannel(channelId) }
+          />
         </header>
 
         <div className="container">
           <div className="row column">
-            <h2>{this.state.channel}</h2>
-            <PlayerWindow videos={this.state.videos} channel_id={this.state.channel_id} user_id="1" />
+            <h2>{ this.state.showMixtape ? 'mixtape' : this.state.channel }</h2>
+            { this.renderVideo() }
           </div>
         </div>
       </div>

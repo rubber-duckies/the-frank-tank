@@ -16,10 +16,10 @@ passport.use(new LocalStrategy(
     .then(user =>{
       if (!user) {
         //return done(null, false, { message: 'Incorrect username.' });
-        return done(JSON.stringify({ 'errorMessage': 'Incorrect username.' }), false);
+        return done('Incorrect username.', false);
       }
       if (!bcrypt.compareSync(password, user.password)) {
-        return done(JSON.stringify({ 'errorMessage': 'Incorrect password.' }), false);
+        return done('Incorrect password.', false);
       }
       return done(null, user);
     });
@@ -37,18 +37,15 @@ passport.use('local-signup', new LocalStrategy({
         passReqToCallback : true 
     },
   function(req, username, password, done) {
-    console.log("req/user/pass: ", req.body, username, password);
     process.nextTick(function() {
       return db.findUser(username)
       .then((user) => {
         if(user){
-          return done(JSON.stringify({ 'errorMessage': 'That username is already taken.'}), false);
+          return done('That username is already taken.', false);
         } else {
-          console.log("reach pp46: ", user)
           var hashPassword =  bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
           db.addUser(username, hashPassword)
           .then((user)=>{
-            console.log("LOCAL SIGNUP", user[0])
             return done(null, user[0]); 
           });
         }

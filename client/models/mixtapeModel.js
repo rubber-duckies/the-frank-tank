@@ -1,8 +1,6 @@
-import $ from './lib/jquery';
+// import $ from './lib/jquery';
 
 const MixtapeModel = {};
-
-var videoData;
 
 MixtapeModel.getVideoLikesByUser = function (userId) {
   return $.ajax({
@@ -11,14 +9,26 @@ MixtapeModel.getVideoLikesByUser = function (userId) {
     headers: {
       'Content-Type': 'application/json',
     }
-  }).then(function (likes) {
-    videoData = likes;
-    return likes;
-  }).fail(function (err) {
-    videoData = null;
-    throw err;
   });
-};
+}
+
+// Returns a Moment Iterator for the currently logged in user
+MixtapeModel.getMomentIteratorForUser = function () {
+  return $.ajax({
+    url: '/mixtape',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(function (likes) {
+    return createMomentIterator(likes);
+  })
+  .fail(function (err) {
+    console.log(err);
+    return null;
+  });
+}
 
 MixtapeModel.getMomentIteratorByUser = function (userId) {
   return MixtapeModel.getVideoLikesByUser(userId)
