@@ -1,4 +1,4 @@
-import $ from './lib/jquery';
+// import $ from './lib/jquery';
 
 const NavModel = {};
 

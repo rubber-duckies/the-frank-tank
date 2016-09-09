@@ -4,7 +4,7 @@ import NavBar from './NavBar';
 import Login from './Login';
 import Signup from './Signup';
 import NavModel from '../models/navModel';
-import $ from '../models/lib/jquery';
+// import $ from '../models/lib/jquery';
 
 export default class App extends React.Component {
   constructor(props) {
