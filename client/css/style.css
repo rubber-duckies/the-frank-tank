@@ -20,6 +20,42 @@ h1, h2 {
   text-shadow: 2px 2px 0px #000;
 }
 
+.authrow {
+  background-color: #225599;
+  padding-bottom: 30px;
+  margin-bottom: 10px;
+}
+#login-section, #signup-section {
+  line-height: 1.0;
+}
+
+#logsign-buttons {
+  text-align: right;
+}
+
+#logsign-buttons button {
+  margin: 1em;
+  padding: .5em 1em;
+  border-radius: 5px;
+  width: 80px;
+}
+
+.dropdown-pane {
+  background-color: #e7e7ee;
+  text-align: left;
+}
+
+.submit-dd {
+  background-color: #2199e8;
+  color: white;
+  border: none;
+  min-width: 50%;
+}
+
+.errorMessage {
+  color: red;
+}
+
 .menu {
   /*position: relative;*/
   z-index: 200;

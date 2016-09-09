@@ -1,8 +1,9 @@
-import $ from './lib/jquery';
+// import $ from './lib/jquery';
 
 // moments are highlight clips within a currently playing video
 export const Moment = (element, moment, player, userId) => {
   const momentObj = moment;
+  console.log('moment', moment)
 
   const likeWindow = $('<div>').addClass('likeWindow').html(`
     <i class="fa fa-thumbs-up"></i>
@@ -13,7 +14,7 @@ export const Moment = (element, moment, player, userId) => {
 
   likeWindow.click((e) => {
     $.ajax({
-      url: 'http://localhost:8000/likes/update',
+      url: '/likes/update',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ export const Moment = (element, moment, player, userId) => {
 // update like count for a specific moment
 export const sendLike = (newLike) => {
   return $.ajax({
-    url: 'http://localhost:8000/likes/create',
+    url: '/likes/create',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -66,9 +67,24 @@ export const sendLike = (newLike) => {
 // get more videos from DB
 export const getMoreVideos = (channelId) =>
   $.ajax({
-    url: `http://localhost:8000/videos/${channelId}`,
+    url: `/videos/${channelId}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
+
+//get video description
+export const getDescription = (url) =>
+    $.ajax({
+    url: '/test/'+ url,
+    method:'GET',
+    headers: {
+      'content-Type':'application/json',
+    },
+  });
+
+
+
+
+

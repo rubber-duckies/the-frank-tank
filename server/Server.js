@@ -24,13 +24,28 @@ const babelify = require('babelify');
 const browserify = require('browserify-middleware');
 const google = require('googleapis');
 const _ = require('underscore');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const flash = require('express-flash');
+const morgan = require('morgan');
+const LocalStrategy = require('passport-local').Strategy;
+var passport = require('./passport');
 
 const db = require('./db');
 
-// Duplicate the 'keys_copyMe.js' file, rename it 'keys.js', and paste in your Google API key
-const keys = require('./keys');
+/*
+  *************************
+  create a .env file to hold environmental configuration
+  This file should be in the root directory of the project
+  This file expects the following variables:
 
-const auth = keys.CLIENT_ID;
+  CLIENT_ID=youtube_api_token
+  PORT=port_that_you_want_to_use
+  NODE_ENV=development
+  *************************
+*/
+
+const auth = process.env.CLIENT_ID;
 
 const youtube = google.youtube({ version: 'v3', auth });
 
@@ -40,111 +55,26 @@ const serverUrl = process.env.PORT || 8000;
 
 const serverMessage = `Listening on port: ${serverUrl}`;
 
-/*
-  *****************************************************
-  Dummy objects to simulate PostgreSQL server structure
-  *****************************************************
-*/
-
-// background image url: https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg
-
-/*
-const channels = [
-  { id: 1, name: 'land', background: 'https://i.ytimg.com/vi/shTUk4WNWVU/maxresdefault.jpg') },
-];
-
-const users = [
-  { id: 1, name: 'Joe' },
-  { id: 2, name: 'Frank' },
-  { id: 3, name: 'Rob' },
-  { id: 4, name: 'Ryan' },
-  { id: 5, name: 'Gilbert' },
-];
-
-const videos = [
-  { id: 1, url: 'OMflBAXJJKc', channel_id: 1 },
-  { id: 2, url: 'x76VEPXYaI0', channel_id: 1 },
-  { id: 3, url: 'evj6y2xZCnM', channel_id: 1 },
-];
-
-const likes = [
-  { id: 1, start: 43, stop: 48, video_id: 1, channel_id: 1, users: [1, 2, 4] },
-  { id: 2, start: 74, stop: 82, video_id: 1, channel_id: 1, users: [2, 3, 4] },
-  { id: 3, start: 38, stop: 42, video_id: 2, channel_id: 1, users: [1, 3, 4] },
-  { id: 4, start: 70, stop: 90, video_id: 3, channel_id: 1, users: [2, 5] },
-];
-
-
-  // *********************************************************
-  // Completed channel object should look something like this:
-  // *********************************************************
-
-
-const dummyObj = {
-  id: 1,
-  channel_name: 'land',
-  background: path.join(__dirname, '../assets/land_background.jpg'),
-  videos: [{
-    url: 'OMflBAXJJKc',
-    time_based_likes: [{
-      id: 1,
-      start: 43,
-      stop: 48,
-      video_id: 1,
-      channel_id: 1,
-      users: [1, 2, 4],
-    }, {
-      id: 2,
-      start: 74,
-      stop: 82,
-      video_id: 1,
-      channel_id: 1,
-      users: [2, 3, 4],
-    }],
-  }, {
-    url: 'x76VEPXYaI0',
-    time_based_likes: [{
-      id: 3,
-      start: 38,
-      stop: 42,
-      video_id: 2,
-      channel_id: 1,
-      users: [1, 3, 4],
-    }],
-  }, {
-    url: 'evj6y2xZCnM',
-    time_based_likes: [{
-      id: 4,
-      start: 70,
-      stop: 73,
-      video_id: 3,
-      channel_id: 1,
-      users: [2, 5],
-    }],
-  }],
-};
-*/
-
 const searchCriteria = {
   1: [
-    'mountain biking',
-    'skateboarding',
-    'motorcross',
-    'stunt biking',
-    'snowboarding',
-    'snow skiing',
+    'cat cute',
+    'cat adorable',
+    'kitten',
+    'kitty'
   ],
   2: [
-    'surfing',
-    'jet ski',
-    'wakeboarding',
-    'water skiing',
+    'cat fail',
+    'cat jerks',
+    'cat being asshole',
+    'cat knocks',
   ],
   3: [
-    'skydiving',
-    'base jumping',
-    'bungee jumping',
-    'wingsuit',
+    'japanese cat',
+    'Maru cat',
+    '猫',
+    '貓',
+    'ネコ',
+    'ねこ'
   ],
 };
 
@@ -153,9 +83,14 @@ const searchCriteria = {
   Middleware calls
   ****************
 */
-
+app.use(morgan('dev'));   // show requests in console
 app.use(bodyParser.json());
-
+app.use(cookieParser());
+// initialize passport
+app.use(session({secret: 'kitty kity', cookie: {}}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash())
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.static(path.join(__dirname, '../assets')));
 
@@ -188,6 +123,85 @@ app.get('/app-bundle.js',
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/public/Index.html'));
 });
+
+/*
+  ***********************************************************************
+  Auth through passport
+
+  Response object:  Index.html file
+  ***********************************************************************
+*/
+
+app.get('/login', function (req, res) {
+  //?
+});
+
+app.post('/login',
+  passport.authenticate('local', {
+      successRedirect: '/loginSuccess',
+      failureRedirect: '/loginFail'
+}));
+
+app.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+app.get('/signup', function(req, res) {
+    //res.render('signup.ejs', { message: req.flash('signupMessage') });
+});
+
+// app.post('/signup', function(req,res){
+//   console.log("sing up, body", req.body, "data: ", req.data);
+
+//   passport.authenticate('local-signup', {
+//       successRedirect: '/loginSuccess',
+//       failureRedirect: '/loginFail'
+//   })(req)
+// });
+
+app.post('/signup',
+  passport.authenticate('local-signup', {
+      successRedirect: '/loginSuccess',
+      failureRedirect: '/loginFail'
+}));
+
+app.get('/loginSuccess', isLoggedIn, function(req, res){
+    console.log("LOGIN FAIL",req);
+    var result = {
+      errorMessage:"", //error message
+      username:req.user.username,
+      isSuccessful: true 
+    }
+    res.send(result);
+  }
+);
+
+app.get('/loginFail', function(req, res){
+  console.log("LOGIN FAIL",req.session.messages);
+    var result = {
+      errorMessage:"", 
+      username:"",
+      isSuccessful: false 
+    }
+    res.send(result);
+  }
+);
+
+app.all('/testPage', isLoggedIn);
+app.get('/testPage', function(req, res){
+  console.log("print out user info", req.user)
+  res.send('You are allow')
+});
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()){
+      console.log("is auth!")
+      return next();
+    }
+
+    res.send("you shall not pass")
+}
 
 /*
   ***********************************************************************
@@ -228,7 +242,7 @@ app.get('/', (req, res) => {
 */
 
 app.get('/channel/:id', (req, res) => {
-  // Build channel object for response
+  // Build channel object for respon
   if (req.params.id === '1' || req.params.id === '2' || req.params.id === '3') {
     db.getChannelById(req.params.id)
     .then(channelResObj => {
@@ -305,6 +319,7 @@ app.get('/channel/:id/likes', (req, res) => {
 */
 
 app.post('/likes/create', (req, res) => {
+
   db.createLike(req.body)
   .then(newLike => {
     res.send(newLike);
@@ -376,8 +391,25 @@ app.get('/db_init', (req, res) => {
     }
   ***********************************************************************
 */
+app.get('/test/:id', (req, res) => {
+  var params = {
+    id: req.params.id + '',
+    part: 'snippet',
+  }
+  youtube.videos.list(params, (err, resp) => {
+    
+    if (err) {
+      res.status(400).send();
+    } else {
+      
+      res.status(200).send(resp.items[0].snippet)
+    }
+  });
+});
+
 
 app.get('/videos/:id', (req, res) => {
+  
   if (req.params.id === '1' || req.params.id === '2' || req.params.id === '3') {
     const randomCriteria = _.shuffle(searchCriteria[req.params.id]);
     const query = `extreme ${randomCriteria[0]} | ${randomCriteria[1]}) -fail -funny -3D`;
@@ -386,19 +418,24 @@ app.get('/videos/:id', (req, res) => {
       order: 'viewCount',
       type: 'video',
       videoDefinition: 'high',
-      videoDuration: 'medium',
+      //videoDuration: 'medium',
       fields: 'items/id',
       videoDimension: '2d',
       videoEmbeddable: 'true',
       part: 'snippet',
+      
     };
 
     youtube.search.list(params, (err, resp) => {
+
       if (err) {
         res.status(404).send('Search failed.  Youtube\'s fault');
       } else if (resp.items.length) {
+
         db.addVideos(resp.items, req.params.id)
+
         .then((videos) => {
+          
           res.status(200).send(videos);
         });
       } else {
@@ -411,6 +448,28 @@ app.get('/videos/:id', (req, res) => {
 });
 
 /*
+  Endpoint for Mixtape --> Returns JSON Array of likes by a userId
+*/
+app.all('/mixtape', isLoggedIn);
+app.get('/mixtape', (req, res) => {
+  db.getVideoLikesByUser(req.user.id)
+    .then(likes => res.status(200).send(likes))
+    .catch(err => {
+      console.log('ROUTE: /mixtape ', err);
+      res.status(400).send();
+    });
+});
+
+app.get('/mixtape/user/:id', (req, res) => {
+  db.getVideoLikesByUser(req.params.id)
+    .then(likes => res.status(200).send(likes))
+    .catch(err => {
+      console.log('ROUTE: /mixtape ', err);
+      res.status(400).send();
+    });
+});
+
+/*
   *******************************************************************
   Spin up server on either NODE environmental variable or 8000(local)
   *******************************************************************
@@ -418,4 +477,30 @@ app.get('/videos/:id', (req, res) => {
 
 app.listen(serverUrl);
 console.log(serverMessage);
+
+
+
+
+// {
+//   "kind": "youtube#videoListResponse",
+//   "etag": "\"I_8xdZu766_FSaexEaDXTIfEWc0/VWTQZzpCz87G-HzrwLxLborUOYE\"",
+//   "pageInfo": {
+//     "totalResults": 1,
+//     "resultsPerPage": 1
+//   },
+//   "items": [
+//     {
+//       "kind": "youtube#video",
+//       "etag": "\"I_8xdZu766_FSaexEaDXTIfEWc0/PlxazYEaMQI2nYFE3MSOf2jlzoY\"",
+//       "id": "DXUFAI-6qDY",
+//       "snippet": {
+//         "publishedAt": "2016-04-06T12:00:11.000Z",
+//         "channelId": "UCa6vGFO9ty8v5KZJXQxdhaw",
+//         "title": "Behind the Scenes with Jimmy Kimmel and Audience (Twin Brothers)",
+//         "description": "During a commercial break, Jimmy talks with identical twin brothers from Oklahoma.\n\nDeleted Scene from \"Ba
+
+
+
+
+
 

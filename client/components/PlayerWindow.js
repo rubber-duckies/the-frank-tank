@@ -1,7 +1,10 @@
 import React from 'react';
 import YouTube from 'react-youtube';
+
 import { sendLike, Moment, getMoreVideos } from '../models/videoModel.js';
-import $ from '../models/lib/jquery';
+
+
+
 
 export default class PlayerWindow extends React.Component {
   constructor(props) {
@@ -42,7 +45,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidMount() {
-    console.log('component mounted');
 
     this.playHead = document.getElementById('playHead');
     this.timeline = document.getElementById('timeline');
@@ -50,12 +52,12 @@ export default class PlayerWindow extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('component updating');
 
     if (this.props.channel_id !== this.state.channel_id) {
       this.updateVideoList(this.props.videos);
     }
   }
+  
 
   // new videos are added if video list reaches a specific length
   checkVideoListLength(list) {
@@ -103,7 +105,6 @@ export default class PlayerWindow extends React.Component {
 
   // ready state from player API
   handleReadyState(event) {
-    console.log('player ready');
     this.player = event.target;
 
     if (this.state.currentVideo) {
@@ -163,7 +164,6 @@ export default class PlayerWindow extends React.Component {
         extremeStop: this.player.getCurrentTime(),
       });
       e.target.classList.remove('alert');
-      console.log(this.state.currentVideo);
       const newLike = {};
       const endTime = this.player.getCurrentTime();
 
@@ -191,8 +191,6 @@ export default class PlayerWindow extends React.Component {
           });
         });
     }
-
-    console.log(this.state.extreme);
   }
 
   // skip to next video
@@ -284,6 +282,8 @@ export default class PlayerWindow extends React.Component {
     this.player.seekTo(seekTime, true);
   }
 
+
+
   // render either a spinner or youtube component
   renderVideo() {
     const opts = {
@@ -302,6 +302,10 @@ export default class PlayerWindow extends React.Component {
     if (!this.state.currentVideo.url) {
       return <i className="fa fa-spinner fa-pulse fa-3x fa-fw" />;
     }
+
+   
+  
+
 
     return (
       <YouTube
@@ -341,7 +345,6 @@ export default class PlayerWindow extends React.Component {
   }
 
   render() {
-    console.log('Current channel: ', this.state.channel_id);
     return (
       <div>
         <div className="flex-video widescreen">
@@ -356,6 +359,7 @@ export default class PlayerWindow extends React.Component {
               onMouseDown={this.handleMouseDown}
               onMouseUp={this.handleMouseUp}
             />
+
           </div>
         </section>
 
@@ -368,7 +372,9 @@ export default class PlayerWindow extends React.Component {
           </div>
           { this.renderButtons() }
         </section>
+        
       </div>
+
     );
   }
 }
