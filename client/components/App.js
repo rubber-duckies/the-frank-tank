@@ -34,6 +34,11 @@ export default class App extends React.Component {
     });
   }
 
+  declareSignedIn(username){
+    console.log("declaring signed in")
+    this.setState({signedin: true, user: username});
+  }
+
   changeChannel(channelId) {
     this.setState({ showMixtape: false });
     NavModel.changeChannel(channelId)
@@ -67,6 +72,7 @@ export default class App extends React.Component {
             }
             signedin={this.state.signedin}
             changeChannel={ (channelId) => this.changeChannel(channelId) }
+            declareSignedIn={(username) => this.declareSignedIn(username)}
           />
         </header>
 

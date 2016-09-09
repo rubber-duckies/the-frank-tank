@@ -46,12 +46,13 @@ export default class SignupPage extends React.Component {
     }
 
     $.ajax(settings)
-    .done(function (response) {
+    .done( (response) => {
+      var username = this.state.username;
+      this.props.declareSignedIn(username);
       console.log("attemptSignup response: ", response);
     })
     .fail( (response) => {
       var messageObject = response.responseText;
-      console.log("messageObject: ", messageObject, "+++response: ", response)
       this.setState({ errorMessage: messageObject });
 
     });

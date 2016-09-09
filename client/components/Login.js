@@ -7,7 +7,8 @@ export default class LoginPage extends React.Component {
     this.state = {
       username: 'username',
       password: 'password',
-      responseMessage: null
+      responseMessage: null,
+      errorMessage: null
     };
 
     this.handleUsernameChange= this.handleUsernameChange.bind(this);
@@ -45,11 +46,13 @@ export default class LoginPage extends React.Component {
     }
 
     $.ajax(settings)
-    .done(function (response) {
- 
+    .done( (response) => {
+      var username = this.state.username;
+      this.props.declareSignedIn(username);
     })
-    .fail(function (response) {
-      
+    .fail( (response) => {
+      var messageObject = response.responseText;
+      this.setState({ errorMessage: messageObject });
     });
   }
 
@@ -61,13 +64,16 @@ export default class LoginPage extends React.Component {
 
   render() {
     return (
-      <form>
-        <label htmlFor="username">Username:</label>
-        <input type="text" placeholder="username" onChange={this.handleUsernameChange} />
-        <label htmlFor="password">Password:</label>
-        <input type="password" placeholder="password" onChange={this.handlePasswordChange} />
-        <button type="button" className="submit-dd" onClick={this.handleSubmit} >Login</button>
-      </form>
+      <div>
+        <form>
+          <label htmlFor="username">Username:</label>
+          <input type="text" placeholder="username" onChange={this.handleUsernameChange} />
+          <label htmlFor="password">Password:</label>
+          <input type="password" placeholder="password" onChange={this.handlePasswordChange} />
+          <button type="button" className="submit-dd" onClick={this.handleSubmit} >Login</button>
+        </form>
+        <p className="errorMessage"> { this.state.errorMessage ? this.state.errorMessage : null } </p>
+      </div>
     );
   }
 }
