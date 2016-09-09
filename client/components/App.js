@@ -18,6 +18,7 @@ export default class App extends React.Component {
       channel_id: 'default',
       id: 0,
       showMixtape: false,
+      signedin: false
     };
   }
 
@@ -31,6 +32,11 @@ export default class App extends React.Component {
       });
       $('body').css('background-image', `url(${this.state.background})`);
     });
+  }
+
+  declareSignedIn(username){
+    console.log("declaring signed in")
+    this.setState({signedin: true, user: username});
   }
 
   changeChannel(channelId) {
@@ -64,7 +70,9 @@ export default class App extends React.Component {
                 this.setState({ showMixtape: true })
               }
             }
+            signedin={this.state.signedin}
             changeChannel={ (channelId) => this.changeChannel(channelId) }
+            declareSignedIn={(username) => this.declareSignedIn(username)}
           />
         </header>
 
