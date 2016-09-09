@@ -44,8 +44,12 @@ export default class LoginPage extends React.Component {
       "data": JSON.stringify(userdata)
     }
 
-    $.ajax(settings).done(function (response) {
+    $.ajax(settings)
+    .done(function (response) {
  
+    })
+    .fail(function (response) {
+      
     });
   }
 

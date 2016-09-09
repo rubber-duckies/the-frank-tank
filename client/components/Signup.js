@@ -7,12 +7,14 @@ export default class SignupPage extends React.Component {
     this.state = {
       username: '', 
       password: '',
-      responseMessage: null
+      responseMessage: null,
+      errorMessage: null
     };
 
     this.handleUsernameChange= this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.setState = this.setState.bind(this);
   }
 
   componentWillMount() {
@@ -44,8 +46,15 @@ export default class SignupPage extends React.Component {
       "data": JSON.stringify(userdata)
     }
 
-    $.ajax(settings).done(function (response) {
-      console.log(response);
+    $.ajax(settings)
+    .done(function (response) {
+      console.log("attemptSignup response: ", response);
+    })
+    .fail(function (response) {
+      var messageObject = response.responseText;
+      console.log("messageObject: ", messageObject)
+      this.setState({ errorMessage: messageObject.errorMessage });
+
     });
   }
 
@@ -57,14 +66,16 @@ export default class SignupPage extends React.Component {
 
   render() {
     return (
-      // 
-      <form>
-        <label htmlFor="username">Username:</label>
-        <input type="text" placeholder="username" onChange={this.handleUsernameChange} />
-        <label htmlFor="password">Password:</label>
-        <input type="password" placeholder="password" onChange={this.handlePasswordChange} />
-        <button type="button" className="submit-dd" onClick={this.handleSubmit} >Signup</button>
-      </form>
+      <div>
+        <form>
+          <label htmlFor="username">Username:</label>
+          <input type="text" placeholder="username" onChange={this.handleUsernameChange} />
+          <label htmlFor="password">Password:</label>
+          <input type="password" placeholder="password" onChange={this.handlePasswordChange} />
+          <button type="button" className="submit-dd" onClick={this.handleSubmit} >Signup</button>
+        </form>
+        <p> { this.state.errorMessage ? this.state.errorMessage : null } </p>
+      </div>
     );
   }
 }
