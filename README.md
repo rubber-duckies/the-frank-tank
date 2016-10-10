@@ -1,105 +1,38 @@
-# To-Do Checklist
+# The Frank Tank
 
-## General
-- [ ] ESLint - AirBnB
-
-## Front End
-- [ ] Basic HTML
-- [ ] Video Player
-
-## Back End
-- [ ] Map server endpoints
-- [ ] Map database structure
-
-----
-# Git Flow
-
-1. When working on new local machine(if machine already set-up, skip to step 2)
-  * git remote add upstream <<url of organization's repo>>
-  * git remote -v
-
-2.
-  * git pull upstream master
-  * git rebase
-
-2. When done working for the day
-  * git push origin master   // to push to your own github
-  * // if you are ready to push to organizations's repo, create pull request on your own github to the organization's repo
-
-----
-# Development Map
-
-1. Stage 1:
-  * Watch random stream of stored videos
-  * Play main channel
-  * See time-based liked moments w/ emoji
-
-2. Stage 2
-  * Account-based login
-  * User access to:
-    * channel functionality
-    * ignore functionality
-
-3. Stage 3
-  * Mixtape functionality
-  * Gamify - create channels to user with most likes (>20)
-
-----
-# Basic Requirements (MVP):
-
-1. Play video
-  * client
-
-2. Apply filters
-  * server
-  * HD standard
-  * Most viewed
-  * Time limit?
-  * add "extreme" to search
-
-3. Create channels
-  * client, server
-  * restrict channels
-    * elements
-      * land:
-        * mountain biking
-        * motorcross
-        * skateboarding
-        * stunt biking
-        * snowboarding
-        * skiing
-      * sea
-        * surfing
-        * jet ski
-        * wakeboarding
-        * water skiing
-      * air
-        * skydiving
-        * base jumping
-        * bungee jumping
-        * wingsuit
-  * database schema
-
-4. Time-based likes
-  * client, server
-  * get current timestamp from user on toggle on
-  * get current timestamp from user on toggle off
-  * pause player
-  * display modal for tagging
-  * grab current user information
-  * on modal accept, send information to database
-  * resume player
-  * cross-user functionality
-    * user should have the option to like other user's time-based likes
+By [RubberDuckies](https://github.com/rubber-duckies)
 
 
-----
-# Extra Credit (non-MVP):
+**The Frank Tank** is a service for discovering and streaming extreme sports videos using the YouTube API, initially developed by [RubberDuckies Dev Team](https://github.com/rubber-duckies).
 
-1. Skins
-  * change based on element
+## Setup
+To contribute to the Frank Tank, there are a few steps you'll need to take:
 
-2. Ignore video
-  * by user
+Clone the repository:
+```
+$ git clone https://github.com/rubber-duckies/the-frank-tank
+```
+Install dependencies:
+```
+$ npm install
+```
 
-3. Gamify - unlock the ability to create channels based on "time-based likes" count
+To run the local server:
+```
+$ npm start
+```
+
+## Tech Stack
+The Frank Tank employs:
+  - ReactJS
+  - PostgreSQL
+  - Node
+  - Express
+
+## RubberDuckies Dev Team
+  - [Francis Toto](https://github.com/francistoto)
+  - [Ryan Walter](https://github.com/rwalter215)
+  - [Robert Ferguson](https://github.com/rewfergu)
+  - [Joe Stowers](https://github.com/jstowers)
+
+Forked and extended by [HackmeCo](https://github.com/hackmeco)
